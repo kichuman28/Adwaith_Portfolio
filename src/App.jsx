@@ -1,105 +1,283 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Skills from './components/Skills';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from './context/ThemeContext';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Hackathons from './pages/Hackathons';
 import Blog from './pages/Blog';
+import { motion, AnimatePresence } from 'framer-motion';
+import ScrollToTop from './components/ScrollToTop';
 
-function App() {
+function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navItems = ['Projects', 'Hackathons', 'Blog'];
+  
+  const handleNavClick = (item) => {
+    if (item === 'Skills') {
+      if (location.pathname !== '/') {
+        navigate('/#skills');
+      } else {
+        const skillsSection = document.getElementById('skills');
+        if (skillsSection) {
+          skillsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+    setIsMenuOpen(false);
+  };
 
   return (
-    <Router>
-      <div className="min-h-screen" style={{ background: theme.background, color: theme.text.primary }}>
-        {/* Floating Navbar */}
-        <div className="fixed top-0 left-0 right-0 w-full flex justify-center p-4 z-50">
-          <nav className="w-[95%] max-w-7xl rounded-2xl shadow-lg backdrop-blur-md" 
-            style={{ 
-              background: `${theme.secondary}E6`,
-              border: `1px solid ${theme.accent}20`
-            }}>
-            <div className="px-4 sm:px-6 lg:px-8">
-              <div className="flex justify-between h-16">
-                <div className="flex items-center">
-                  <Link to="/" className="text-2xl font-bold hover:scale-105 transition-transform duration-200" style={{ color: theme.accent }}>Adwaith</Link>
-                </div>
-                
-                {/* Desktop Navigation */}
-                <div className="hidden md:flex items-center space-x-8">
-                  <Link to="/" className="hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Home</Link>
-                  <Link to="/#skills" className="hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Skills</Link>
-                  <Link to="/projects" className="hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Projects</Link>
-                  <Link to="/hackathons" className="hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Hackathons</Link>
-                  <Link to="/blog" className="hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Blog</Link>
-                  <Link to="/#contact" className="hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Contact</Link>
-                </div>
-
-                {/* Mobile menu button */}
-                <div className="md:hidden flex items-center">
+    <div className="min-h-screen relative overflow-x-hidden" style={{ background: theme.background, color: theme.text.primary }}>
+      {/* Enhanced Floating Navbar */}
+      <div className="fixed top-0 left-0 right-0 w-full flex justify-center p-4 z-50">
+        <motion.nav 
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-[95%] max-w-7xl rounded-2xl shadow-lg backdrop-blur-lg"
+          style={{ 
+            background: `${theme.secondary}80`,
+            borderBottom: `1px solid ${theme.accent}20`,
+            boxShadow: `0 10px 30px -10px ${theme.accent}30`
+          }}
+        >
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16">
+              <motion.div 
+                className="flex items-center"
+                whileHover={{ scale: 1.05 }}
+              >
+                <Link 
+                  to="/"
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  className="text-2xl font-bold relative group font-audiowide"
+                  style={{ color: theme.accent }}
+                >
+                  <span className="relative z-10 text-glow" style={{ color: '#00D1B2', textShadow: '0 0 15px #00D1B2' }}>Adwaith</span>
+                  <motion.span
+                    className="absolute inset-0 rounded-lg -z-10"
+                    style={{ 
+                      background: `${theme.accent}15`,
+                      originX: 0,
+                      boxShadow: `0 0 20px ${theme.accent}30`
+                    }}
+                    initial={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </Link>
+              </motion.div>
+              
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-2">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="inline-flex items-center justify-center p-2 rounded-md focus:outline-none"
-                    style={{ color: theme.text.secondary }}
+                    onClick={() => handleNavClick('Skills')}
+                    className="px-4 py-2 rounded-xl relative group font-grotesk"
+                    style={{ color: 'rgba(255, 255, 255, 0.9)' }}
                   >
-                    <svg
-                      className="h-6 w-6"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      {isMenuOpen ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                      )}
-                    </svg>
+                    <span className="relative z-10 font-medium">Skills</span>
+                    <motion.span
+                      className="absolute inset-0 rounded-xl -z-10"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${theme.accent}20, ${theme.accent}05)`,
+                        boxShadow: `0 0 20px ${theme.accent}20`
+                      }}
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      whileHover={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    />
                   </button>
-                </div>
+                </motion.div>
+                {navItems.map((item) => (
+                  <motion.div
+                    key={item}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      to={`/${item.toLowerCase()}`}
+                      className="px-4 py-2 rounded-xl relative group font-grotesk"
+                      style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                    >
+                      <span className="relative z-10 font-medium">{item}</span>
+                      <motion.span
+                        className="absolute inset-0 rounded-xl -z-10"
+                        style={{ 
+                          background: `linear-gradient(135deg, ${theme.accent}20, ${theme.accent}05)`,
+                          boxShadow: `0 0 20px ${theme.accent}20`
+                        }}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        whileHover={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    </Link>
+                  </motion.div>
+                ))}
               </div>
-            </div>
-          </nav>
-        </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="fixed inset-x-0 top-24 p-4 md:hidden z-40">
-            <div 
-              className="w-[95%] mx-auto rounded-xl shadow-lg backdrop-blur-md animate-fade-in"
-              style={{ 
-                background: `${theme.secondary}E6`,
-                border: `1px solid ${theme.accent}20`
-              }}
-            >
-              <div className="px-2 pt-2 pb-3 space-y-1">
-                <Link to="/" className="block px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Home</Link>
-                <Link to="/#skills" className="block px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Skills</Link>
-                <Link to="/projects" className="block px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Projects</Link>
-                <Link to="/hackathons" className="block px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Hackathons</Link>
-                <Link to="/blog" className="block px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Blog</Link>
-                <Link to="/#contact" className="block px-4 py-2 rounded-lg hover:scale-105 transition-all duration-200" style={{ color: theme.text.secondary }}>Contact</Link>
-              </div>
+              {/* Mobile menu button */}
+              <motion.div 
+                className="md:hidden flex items-center"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="inline-flex items-center justify-center p-2 rounded-xl transition-colors duration-200"
+                  style={{ 
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    background: isMenuOpen ? `${theme.accent}20` : 'transparent',
+                    boxShadow: isMenuOpen ? `0 0 20px ${theme.accent}20` : 'none'
+                  }}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    stroke="currentColor"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <motion.path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      variants={{
+                        closed: { d: "M4 6h16M4 12h16M4 18h16" },
+                        open: { d: "M6 18L18 6M6 6l12 12" }
+                      }}
+                      animate={isMenuOpen ? "open" : "closed"}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </svg>
+                </button>
+              </motion.div>
             </div>
           </div>
-        )}
+        </motion.nav>
+      </div>
 
-        {/* Main Content */}
+      {/* Animated Mobile Navigation */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-x-0 top-24 p-4 md:hidden z-40"
+          >
+            <motion.div 
+              className="w-[95%] mx-auto rounded-2xl shadow-lg backdrop-blur-lg overflow-hidden"
+              style={{ 
+                background: `${theme.secondary}90`,
+                borderBottom: `1px solid ${theme.accent}20`,
+                boxShadow: `0 10px 30px -10px ${theme.accent}30`
+              }}
+              initial={{ height: 0 }}
+              animate={{ height: "auto" }}
+              exit={{ height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="px-2 py-3 space-y-1">
+                <motion.div
+                  whileHover={{ x: 10 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <button
+                    onClick={() => handleNavClick('Skills')}
+                    className="block w-full text-left px-4 py-2 rounded-xl font-grotesk"
+                    style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                  >
+                    Skills
+                  </button>
+                </motion.div>
+                {navItems.map((item) => (
+                  <motion.div
+                    key={item}
+                    whileHover={{ x: 10 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      to={`/${item.toLowerCase()}`}
+                      className="block px-4 py-2 rounded-xl font-grotesk"
+                      style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                      onClick={() => handleNavClick(item)}
+                    >
+                      {item}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Content */}
+      <main className="relative">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/blog" element={<Blog />} />
         </Routes>
+      </main>
 
-        {/* Footer */}
-        <footer className="py-8" style={{ background: theme.secondary, color: theme.text.secondary }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>© {new Date().getFullYear()} Adwaith. All rights reserved.</p>
+      {/* Enhanced Footer */}
+      <footer className="relative py-12" style={{ background: 'rgba(255, 255, 255, 0.02)' }}>
+        <div className="absolute inset-0 backdrop-blur-sm" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="flex flex-col items-center space-y-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 font-audiowide"
+            >
+              Adwaith
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-sm font-grotesk"
+              style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            >
+              Building digital experiences with code and creativity
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-sm"
+              style={{ color: 'rgba(255, 255, 255, 0.5)' }}
+            >
+              © {new Date().getFullYear()} All rights reserved
+            </motion.div>
           </div>
-        </footer>
-      </div>
+        </div>
+      </footer>
+
+      {/* Scroll to Top Button */}
+      <ScrollToTop />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
