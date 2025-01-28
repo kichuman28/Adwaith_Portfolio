@@ -1,5 +1,6 @@
 import { useTheme } from '../context/ThemeContext';
 import Skills from '../components/Skills';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const { theme } = useTheme();
@@ -45,47 +46,82 @@ const Home = () => {
 
   return (
     <main className="pt-16">
-      {/* Hero/Bio Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center" 
-        style={{ background: `linear-gradient(to bottom right, ${theme.background}, ${theme.secondary})` }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      {/* Hero Section */}
+      <section id="home" className="min-h-[90vh] flex items-center justify-center relative overflow-hidden" 
+        style={{ 
+          background: `linear-gradient(135deg, ${theme.background}, ${theme.secondary})`
+        }}>
+        <div className="absolute inset-0" style={{ 
+          background: `radial-gradient(circle at 50% 50%, ${theme.accent}10 0%, transparent 25%)`
+        }}/>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10"
+        >
           <div className="text-center">
-            <h1 className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-4xl tracking-tight font-extrabold sm:text-5xl md:text-6xl"
+            >
               <span className="block" style={{ color: theme.text.primary }}>Hi, I'm Adwaith</span>
-              <span className="block" style={{ color: theme.accent }}>Computer Science Student</span>
-            </h1>
-            <p className="mt-3 max-w-md mx-auto text-base sm:text-lg md:mt-5 md:text-xl md:max-w-3xl" style={{ color: theme.text.secondary }}>
+              <span className="block mt-2" style={{ color: theme.accent }}>Computer Science Student</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mt-6 max-w-lg mx-auto text-lg sm:text-xl md:max-w-2xl"
+              style={{ color: theme.text.secondary }}
+            >
               Final year computer science student passionate about technology and innovation.
               Building solutions that make a difference.
-            </p>
+            </motion.p>
             
             {/* Contact Links */}
-            <div className="mt-8 flex justify-center space-x-6">
-              {contactLinks.map((link) => (
-                <a
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mt-8 flex justify-center space-x-6"
+            >
+              {contactLinks.map((link, index) => (
+                <motion.a
                   key={link.name}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transform hover:scale-110 transition-transform duration-200"
+                  className="transform transition-all duration-200"
                   style={{ color: theme.accent }}
                   aria-label={link.name}
                 >
                   {link.icon}
-                </a>
+                </motion.a>
               ))}
-            </div>
+            </motion.div>
 
             {/* Resume Button */}
-            <div className="mt-8">
-              <a
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="mt-8"
+            >
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 href="/path-to-your-resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 rounded-lg transition-all duration-200 gap-2"
+                className="inline-flex items-center px-8 py-3 rounded-full transition-all duration-200 gap-2"
                 style={{ 
                   background: theme.accent,
-                  color: theme.text.primary,
+                  color: '#ffffff',
                   boxShadow: `0 4px 14px 0 ${theme.accent}40`
                 }}
               >
@@ -93,23 +129,125 @@ const Home = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Download Resume
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
           </div>
+        </motion.div>
+      </section>
+
+      {/* About Me Section */}
+      <section id="about" className="py-20" style={{ background: theme.background }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+          >
+            {/* Image Column */}
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="relative mx-auto md:mx-0 max-w-md w-full"
+            >
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl"
+                style={{ 
+                  border: `2px solid ${theme.accent}20`,
+                  background: theme.secondary
+                }}>
+                <img
+                  src="/assets/images/my_photo.jpg"
+                  alt="Adwaith"
+                  className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 opacity-10 blur-2xl group-hover:opacity-20 transition duration-700" 
+                style={{ 
+                  background: `linear-gradient(45deg, ${theme.accent}20, ${theme.secondary})`,
+                  zIndex: -1
+                }}
+              />
+              <div className="absolute -inset-1 rounded-2xl"
+                style={{ 
+                  background: `radial-gradient(circle at 50% 50%, ${theme.accent}15 0%, transparent 70%)`,
+                  filter: 'blur(30px)',
+                  transform: 'translate(10px, 10px)',
+                  zIndex: -1
+                }}
+              />
+            </motion.div>
+
+            {/* Content Column */}
+            <div className="space-y-6 text-left">
+              <motion.h2 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+                className="text-3xl font-bold"
+                style={{ color: theme.accent }}
+              >
+                About Me
+              </motion.h2>
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="space-y-4 text-lg"
+                style={{ color: theme.text.secondary }}
+              >
+                <p className="leading-relaxed">
+                  Hello! I'm a final year Computer Science student with a passion for building innovative solutions.
+                  My journey in tech has been driven by curiosity and a desire to create meaningful impact through code.
+                </p>
+                <p className="leading-relaxed">
+                  I specialize in full-stack development and have a keen interest in artificial intelligence and machine learning.
+                  When I'm not coding, you can find me participating in hackathons, contributing to open-source projects,
+                  or exploring new technologies.
+                </p>
+                <div className="pt-6">
+                  <motion.a
+                    whileHover={{ scale: 1.05, x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                    href="#contact"
+                    className="inline-flex items-center px-6 py-2.5 rounded-full text-base font-medium transition-all duration-200 gap-2"
+                    style={{ 
+                      background: `${theme.accent}15`,
+                      color: theme.accent,
+                      border: `1px solid ${theme.accent}30`
+                    }}
+                  >
+                    Get in touch 
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </motion.a>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-16" style={{ background: theme.background }}>
+      <section id="skills" className="py-20" style={{ background: theme.secondary }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold mb-2" style={{ color: theme.accent }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold mb-4" style={{ color: theme.accent }}>
               Tech Stack
             </h2>
-            <p className="text-sm" style={{ color: theme.text.secondary }}>
-              Technologies and tools I work with
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: theme.text.secondary }}>
+              Technologies and tools I work with to bring ideas to life
             </p>
-          </div>
+          </motion.div>
           <Skills />
         </div>
       </section>
