@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Skills from './components/Skills';
 import { useTheme } from './context/ThemeContext';
 import Home from './pages/Home';
+import Projects from './pages/Projects';
 import Hackathons from './pages/Hackathons';
 import Blog from './pages/Blog';
 
@@ -25,7 +26,7 @@ function App() {
               <div className="hidden md:flex items-center space-x-8">
                 <Link to="/" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Home</Link>
                 <Link to="/#skills" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Skills</Link>
-                <Link to="/#projects" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Projects</Link>
+                <Link to="/projects" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Projects</Link>
                 <Link to="/hackathons" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Hackathons</Link>
                 <Link to="/blog" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Blog</Link>
                 <Link to="/#contact" className="transition-colors duration-200" style={{ color: theme.text.secondary }}>Contact</Link>
@@ -61,7 +62,7 @@ function App() {
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <Link to="/" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Home</Link>
                 <Link to="/#skills" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Skills</Link>
-                <Link to="/#projects" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Projects</Link>
+                <Link to="/projects" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Projects</Link>
                 <Link to="/hackathons" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Hackathons</Link>
                 <Link to="/blog" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Blog</Link>
                 <Link to="/#contact" className="block px-3 py-2 transition-colors duration-200" style={{ color: theme.text.secondary }}>Contact</Link>
@@ -73,6 +74,7 @@ function App() {
         {/* Main Content */}
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/blog" element={<Blog />} />
         </Routes>

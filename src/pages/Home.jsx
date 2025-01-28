@@ -38,20 +38,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="py-20 transition-colors duration-200" style={{ background: theme.secondary }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-center mb-12" style={{ color: theme.accent }}>
-            Featured Projects
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Project cards will be added here */}
-          </div>
-        </div>
-      </section>
-
       {/* Contact Section */}
-      <section id="contact" className="py-20 transition-colors duration-200" style={{ background: theme.background }}>
+      <section id="contact" className="py-20 transition-colors duration-200" style={{ background: theme.secondary }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-extrabold text-center mb-12" style={{ color: theme.accent }}>
             Get In Touch
