@@ -33,20 +33,20 @@ function AppContent() {
   return (
     <div className="min-h-screen relative overflow-x-hidden" style={{ background: theme.background, color: theme.text.primary }}>
       {/* Enhanced Floating Navbar */}
-      <div className="fixed top-0 left-0 right-0 w-full flex justify-center p-4 z-50">
+      <div className="fixed top-0 left-0 right-0 w-full flex justify-center p-2 sm:p-4 z-50">
         <motion.nav 
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-[95%] max-w-7xl rounded-2xl shadow-lg backdrop-blur-lg"
+          className="w-[98%] sm:w-[95%] max-w-7xl rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-lg"
           style={{ 
             background: `${theme.secondary}80`,
             borderBottom: `1px solid ${theme.accent}20`,
             boxShadow: `0 10px 30px -10px ${theme.accent}30`
           }}
         >
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
+          <div className="px-3 sm:px-4 lg:px-8">
+            <div className="flex justify-between h-14 sm:h-16">
               <motion.div 
                 className="flex items-center"
                 whileHover={{ scale: 1.05 }}
@@ -54,7 +54,7 @@ function AppContent() {
                 <Link 
                   to="/"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="text-2xl font-bold relative group font-audiowide"
+                  className="text-xl sm:text-2xl font-bold relative group font-audiowide"
                   style={{ color: theme.accent }}
                 >
                   <span className="relative z-10 text-glow" style={{ color: '#00D1B2', textShadow: '0 0 15px #00D1B2' }}>Adwaith</span>
@@ -171,10 +171,10 @@ function AppContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-x-0 top-24 p-4 md:hidden z-40"
+            className="fixed inset-x-0 top-20 sm:top-24 p-2 sm:p-4 md:hidden z-40"
           >
             <motion.div 
-              className="w-[95%] mx-auto rounded-2xl shadow-lg backdrop-blur-lg overflow-hidden"
+              className="w-[98%] sm:w-[95%] mx-auto rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-lg overflow-hidden"
               style={{ 
                 background: `${theme.secondary}90`,
                 borderBottom: `1px solid ${theme.accent}20`,
@@ -231,16 +231,16 @@ function AppContent() {
       </main>
 
       {/* Enhanced Footer */}
-      <footer className="relative py-12" style={{ background: 'rgba(255, 255, 255, 0.02)' }}>
+      <footer className="relative py-6 sm:py-8" style={{ background: 'rgba(255, 255, 255, 0.02)' }}>
         <div className="absolute inset-0 backdrop-blur-sm" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex flex-col items-center space-y-4">
+          <div className="flex flex-col items-center space-y-2 sm:space-y-3">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 font-audiowide"
+              className="text-lg sm:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 font-audiowide"
             >
               Adwaith
             </motion.div>
@@ -249,20 +249,10 @@ function AppContent() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-sm font-grotesk"
+              className="text-xs sm:text-sm font-grotesk text-center px-4"
               style={{ color: 'rgba(255, 255, 255, 0.7)' }}
             >
               Building digital experiences with code and creativity
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="text-sm"
-              style={{ color: 'rgba(255, 255, 255, 0.5)' }}
-            >
-              © {new Date().getFullYear()} All rights reserved
             </motion.div>
           </div>
         </div>

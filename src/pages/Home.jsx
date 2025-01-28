@@ -3,6 +3,9 @@ import Skills from '../components/Skills';
 import { motion } from 'framer-motion';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { useEffect } from 'react';
+import { FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
+import { MdEmail, MdPhone } from 'react-icons/md';
+import { HiDocumentDownload } from 'react-icons/hi';
 
 const TECH_STACK = [
   {
@@ -77,40 +80,29 @@ const Home = () => {
 
   const contactLinks = [
     {
-      name: 'Email',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
-      href: 'mailto:your.email@example.com'
+      name: 'GitHub',
+      href: 'https://github.com/kichuman28',
+      icon: <FaGithub className="w-6 h-6" />
     },
     {
       name: 'LinkedIn',
-      icon: (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-        </svg>
-      ),
-      href: 'https://linkedin.com/in/your-profile'
+      href: 'https://www.linkedin.com/in/adwaith-jayasankar-156539200/',
+      icon: <FaLinkedin className="w-6 h-6" />
     },
     {
-      name: 'GitHub',
-      icon: (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.137 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-        </svg>
-      ),
-      href: 'https://github.com/your-username'
+      name: 'LeetCode',
+      href: 'https://leetcode.com/u/kichu31084/',
+      icon: <FaCode className="w-6 h-6" />
+    },
+    {
+      name: 'Email',
+      href: 'mailto:adwaithjk28@gmail.com',
+      icon: <MdEmail className="w-6 h-6" />
     },
     {
       name: 'Phone',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-        </svg>
-      ),
-      href: 'tel:+1234567890'
+      href: 'tel:+919645750263',
+      icon: <MdPhone className="w-6 h-6" />
     }
   ];
 
@@ -121,15 +113,15 @@ const Home = () => {
       {/* Content Container */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section id="home" className="min-h-screen flex items-center justify-center pt-28">
+        <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-20 sm:pt-28">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
-            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative"
+            className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative"
           >
             {/* Decorative circle */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[600px] h-[300px] sm:h-[400px] md:h-[600px] rounded-full"
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(40px)',
@@ -142,21 +134,24 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight mb-8"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-4 sm:mb-8"
               >
-                <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 hover:scale-105 transition-transform duration-300">
-                  Hi, I'm Adwaith
+                <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 hover:scale-105 transition-transform duration-300 animate-glow" style={{
+                  filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
+                  textShadow: '0 0 15px rgba(52, 211, 153, 0.5)'
+                }}>
+                  Hi, I'm Adwaith.
                 </span>
               </motion.h1>
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="mt-8 max-w-2xl mx-auto text-xl sm:text-2xl leading-relaxed"
+                className="mt-4 sm:mt-8 max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl leading-relaxed px-4"
                 style={{ color: 'rgba(255, 255, 255, 0.9)' }}
               >
-                Final year computer science student passionate about technology and innovation.
-                Building solutions that make a difference.
+                I love Hackathons, Communities & Lofi Soundtracks! <br className="hidden sm:block" />
+                Not necessarily in that order :)
               </motion.p>
               
               {/* Contact Links */}
@@ -164,9 +159,9 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="mt-16 flex justify-center space-x-8"
+                className="mt-8 sm:mt-16 flex flex-wrap justify-center gap-4 sm:gap-8 px-4"
               >
-                {contactLinks.map((link, index) => (
+                {contactLinks.map((link) => (
                   <motion.a
                     key={link.name}
                     whileHover={{ scale: 1.05 }}
@@ -184,7 +179,7 @@ const Home = () => {
                     }}
                     aria-label={link.name}
                   >
-                    <div className="text-emerald-400 w-6 h-6">
+                    <div className="text-emerald-400 w-5 h-5 sm:w-6 sm:h-6">
                       {link.icon}
                     </div>
                   </motion.a>
@@ -196,26 +191,27 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-16"
+                className="mt-8 sm:mt-16 px-4"
               >
                 <motion.a
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ 
+                    scale: 1.02,
+                    boxShadow: '0 0 30px rgba(52,211,153,0.8), 0 0 60px rgba(52,211,153,0.6), 0 0 90px rgba(52,211,153,0.4)'
+                  }}
                   whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                  href="/path-to-your-resume.pdf"
+                  transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                  href="https://drive.google.com/file/d/1Va6AXTvxV7BvqWMioEaoW4bYXMMcv8Qi/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center px-8 py-3 rounded-full text-lg font-medium gap-2 bg-gradient-to-r from-teal-400 to-emerald-400"
+                  className="inline-flex items-center px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-base sm:text-lg font-medium gap-2 bg-gradient-to-r from-teal-400 to-emerald-400"
                   style={{ 
                     color: '#0A0F1C',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2), 0 0 20px rgba(52, 211, 153, 0.5)',
                     willChange: 'transform'
                   }}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  Download Resume
+                  <HiDocumentDownload className="w-4 h-4 sm:w-5 sm:h-5" />
+                  View Resume
                 </motion.a>
               </motion.div>
             </div>
@@ -223,8 +219,7 @@ const Home = () => {
         </section>
 
         {/* About Me Section */}
-        <section id="about" className="min-h-screen py-20 flex items-center relative">
-          {/* Decorative elements */}
+        <section id="about" className="min-h-screen py-12 sm:py-20 flex items-center relative">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-0 left-1/4 w-[300px] h-[300px] rounded-full"
               style={{
@@ -248,34 +243,49 @@ const Home = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center"
             >
               {/* Image Column */}
               <motion.div 
                 whileHover={{ scale: 1.02 }}
-                className="relative mx-auto md:mx-0 max-w-md w-full"
+                className="relative mx-auto md:mx-0 w-full max-w-[280px] sm:max-w-[320px] md:max-w-md"
               >
-                <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm"
+                {/* Glow effect behind image */}
+                <div className="absolute inset-0 -z-10 animate-pulse-slow"
+                  style={{
+                    background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.3) 0%, transparent 70%)',
+                    filter: 'blur(40px)',
+                    transform: 'translate(-10%, -10%) scale(1.2)'
+                  }}
+                />
+                <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm relative"
                   style={{ 
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    background: 'rgba(255, 255, 255, 0.05)'
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    boxShadow: '0 0 30px rgba(52, 211, 153, 0.2), inset 0 0 20px rgba(52, 211, 153, 0.1)'
                   }}>
                   <img
                     src="/assets/images/my_photo.jpg"
                     alt="Adwaith"
                     className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
                   />
                 </div>
               </motion.div>
 
               {/* Content Column */}
-              <div className="space-y-8 text-left">
+              <div className="space-y-6 sm:space-y-8 text-left">
                 <motion.h2 
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8 }}
                   viewport={{ once: true }}
-                  className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400"
+                  className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 relative"
+                  style={{
+                    textShadow: '0 0 20px rgba(52, 211, 153, 0.5), 0 0 40px rgba(52, 211, 153, 0.3)'
+                  }}
                 >
                   About Me
                 </motion.h2>
@@ -284,36 +294,20 @@ const Home = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                   viewport={{ once: true }}
-                  className="space-y-6 text-lg"
+                  className="space-y-4 sm:space-y-6 text-base sm:text-lg font-grotesk"
                   style={{ color: 'rgba(255, 255, 255, 0.8)' }}
                 >
                   <p className="leading-relaxed">
-                    Hello! I'm a final year Computer Science student with a passion for building innovative solutions.
-                    My journey in tech has been driven by curiosity and a desire to create meaningful impact through code.
+                    Hello! I'm a final year Computer Science student who thrives on new challenges and experiences.
+                    My journey in tech has been marked by constantly seeking out opportunities to learn and grow,
+                    whether through hackathons, side projects, or exploring emerging technologies.
                   </p>
                   <p className="leading-relaxed">
-                    I specialize in full-stack development and have a keen interest in artificial intelligence and machine learning.
-                    When I'm not coding, you can find me participating in hackathons, contributing to open-source projects,
-                    or exploring new technologies.
+                    I'm an avid hackathon enthusiast, having participated in numerous competitions where I've honed my
+                    ability to rapidly prototype solutions and work effectively in team environments. When I'm not competing
+                    in hackathons, you'll find me sketching in my notebook, playing video games, or studying
+                    Japanese! - always eager to explore new hobbies and creative pursuits.
                   </p>
-                  <div className="pt-8">
-                    <motion.a
-                      whileHover={{ scale: 1.02, x: 5 }}
-                      whileTap={{ scale: 0.98 }}
-                      href="#contact"
-                      className="inline-flex items-center px-6 py-3 rounded-full text-base font-medium gap-2 backdrop-blur-sm"
-                      style={{ 
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        color: '#fff'
-                      }}
-                    >
-                      Get in touch 
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </motion.a>
-                  </div>
                 </motion.div>
               </div>
             </motion.div>
@@ -321,8 +315,7 @@ const Home = () => {
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className="min-h-screen py-20 flex items-center relative">
-          {/* Decorative elements */}
+        <section id="skills" className="min-h-screen py-12 sm:py-20 flex items-center relative">
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px]"
               style={{
@@ -341,41 +334,32 @@ const Home = () => {
           </div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            {/* Tech stack heading with enhanced animation */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="text-center mb-16 relative"
+              className="text-center mb-12 sm:mb-16 relative"
             >
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                viewport={{ once: true }}
-                className="absolute -top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full"
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 relative"
                 style={{
-                  background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.2) 0%, transparent 70%)',
-                  filter: 'blur(20px)'
+                  textShadow: '0 0 20px rgba(52, 211, 153, 0.5), 0 0 40px rgba(52, 211, 153, 0.3)'
                 }}
-              />
-              
-              <h2 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 relative">
+              >
                 Tech Stack
               </h2>
-              <p className="text-lg max-w-2xl mx-auto" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+              <p className="text-base sm:text-lg max-w-2xl mx-auto font-grotesk px-4" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                 Technologies and tools I work with to bring ideas to life
               </p>
             </motion.div>
 
-            {/* Tech Grid with enhanced animations */}
+            {/* Tech Grid */}
             <motion.div 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6"
             >
               {TECH_STACK.map((tech, index) => (
                 <motion.div
@@ -394,16 +378,25 @@ const Home = () => {
                     y: -5,
                     transition: { type: "spring", stiffness: 400, damping: 10 }
                   }}
-                  className="group relative p-6 rounded-xl backdrop-blur-sm"
+                  className="group relative p-6 rounded-xl backdrop-blur-sm transition-all duration-300"
                   style={{ 
                     background: 'rgba(255, 255, 255, 0.03)',
                     border: '1px solid rgba(255, 255, 255, 0.05)',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
+                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1), 0 0 15px rgba(52, 211, 153, 0.1)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.15), 0 0 30px rgba(52, 211, 153, 0.3)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1), 0 0 15px rgba(52, 211, 153, 0.1)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
                   }}
                 >
                   <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500"
                     style={{
-                      background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
+                      background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.2) 0%, transparent 70%)',
                       filter: 'blur(10px)'
                     }}
                   />
@@ -416,7 +409,7 @@ const Home = () => {
                       alt={tech.name}
                       className="w-12 h-12 object-contain"
                     />
-                    <p className="text-sm font-medium text-center transition-colors duration-300"
+                    <p className="text-sm font-medium text-center transition-colors duration-300 font-grotesk"
                       style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                       {tech.name}
                     </p>

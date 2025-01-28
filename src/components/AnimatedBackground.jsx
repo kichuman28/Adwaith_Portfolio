@@ -4,28 +4,62 @@ import { useTheme } from '../context/ThemeContext';
 const AnimatedBackground = () => {
   const { theme } = useTheme();
   
-  const floatingElements = Array(12).fill(null);
-  const smallElements = Array(20).fill(null);
+  const floatingElements = Array(15).fill(null);
+  const smallElements = Array(30).fill(null);
+  const blobs = Array(3).fill(null);
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* Base Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-[#12151E] to-[#0A0F1C]">
+      {/* Base Gradient - Darker */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1C] via-[#141E2C] to-[#0A0F1C]">
         {/* Animated gradient overlay */}
         <div 
           className="absolute inset-0 opacity-30"
           style={{
-            background: 'radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.15), transparent 50%)',
+            background: 'radial-gradient(circle at 50% 50%, rgba(52, 211, 153, 0.2), transparent 60%)',
             animation: 'pulse 8s ease-in-out infinite'
           }}
         />
       </div>
 
+      {/* Animated Blobs */}
+      {blobs.map((_, index) => (
+        <motion.div
+          key={`blob-${index}`}
+          className="absolute"
+          initial={{
+            top: `${30 + index * 30}%`,
+            left: `${20 + index * 30}%`,
+            scale: 1,
+          }}
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+            borderRadius: ["30% 70% 70% 30% / 30% 30% 70% 70%", "60% 40% 30% 70% / 60% 30% 70% 40%", "30% 70% 70% 30% / 30% 30% 70% 70%"],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "linear",
+            delay: index * 2,
+          }}
+          style={{
+            width: '400px',
+            height: '400px',
+            background: `radial-gradient(circle at center, ${theme.accent}30, transparent 70%)`,
+            filter: 'blur(50px)',
+            willChange: 'transform',
+            zIndex: 0,
+          }}
+        />
+      ))}
+
       {/* Small floating particles */}
       {smallElements.map((_, index) => (
         <motion.div
           key={`particle-${index}`}
-          className="absolute w-1 h-1 rounded-full"
+          className="absolute w-1.5 h-1.5 rounded-full"
           initial={{
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight * 2,
@@ -35,18 +69,18 @@ const AnimatedBackground = () => {
           animate={{
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight * 2,
-            scale: Math.random() * 2 + 1,
-            opacity: Math.random() * 0.3 + 0.2,
+            scale: Math.random() * 2.5 + 1,
+            opacity: Math.random() * 0.4 + 0.2,
             transition: {
-              duration: Math.random() * 10 + 10,
+              duration: Math.random() * 8 + 8,
               repeat: Infinity,
               repeatType: "reverse",
               ease: "linear"
             }
           }}
           style={{
-            background: 'rgba(52, 211, 153, 0.5)',
-            boxShadow: '0 0 10px rgba(52, 211, 153, 0.5)',
+            background: 'rgba(52, 211, 153, 0.6)',
+            boxShadow: '0 0 15px rgba(52, 211, 153, 0.5)',
             willChange: 'transform'
           }}
         />
@@ -55,12 +89,12 @@ const AnimatedBackground = () => {
       {/* Large floating elements */}
       {floatingElements.map((_, index) => (
         <motion.div
-          key={`blob-${index}`}
-          className="absolute rounded-full opacity-[0.15]"
+          key={`float-${index}`}
+          className="absolute rounded-full opacity-20"
           initial={{
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight * 2,
-            scale: Math.random() * 0.5 + 0.5,
+            scale: Math.random() * 0.7 + 0.6,
             rotate: 0
           }}
           animate={{
@@ -68,17 +102,17 @@ const AnimatedBackground = () => {
             y: Math.random() * window.innerHeight * 2,
             rotate: 360,
             transition: {
-              duration: Math.random() * 20 + 20,
+              duration: Math.random() * 15 + 15,
               repeat: Infinity,
               repeatType: "reverse",
               ease: "linear"
             }
           }}
           style={{
-            width: Math.random() * 300 + 100 + 'px',
-            height: Math.random() * 300 + 100 + 'px',
-            background: `radial-gradient(circle at center, ${theme.accent}30, transparent)`,
-            filter: 'blur(30px)',
+            width: Math.random() * 400 + 150 + 'px',
+            height: Math.random() * 400 + 150 + 'px',
+            background: `radial-gradient(circle at center, ${theme.accent}40, transparent)`,
+            filter: 'blur(40px)',
             willChange: 'transform'
           }}
         />
@@ -98,16 +132,16 @@ const AnimatedBackground = () => {
         className="absolute inset-0" 
         style={{
           backgroundImage: `
-            linear-gradient(${theme.accent}10 1px, transparent 1px), 
-            linear-gradient(90deg, ${theme.accent}10 1px, transparent 1px)
+            linear-gradient(${theme.accent}15 1px, transparent 1px), 
+            linear-gradient(90deg, ${theme.accent}15 1px, transparent 1px)
           `,
           backgroundSize: '100px 100px',
-          opacity: 0.05,
-          boxShadow: 'inset 0 0 100px rgba(52, 211, 153, 0.1)'
+          opacity: 0.08,
+          boxShadow: 'inset 0 0 150px rgba(52, 211, 153, 0.15)'
         }}
       />
 
-      {/* Vignette Effect */}
+      {/* Vignette Effect - Darker */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -120,10 +154,16 @@ const AnimatedBackground = () => {
 
 export default AnimatedBackground;
 
-// Add this to your global CSS or custom.css
+// Add these to your global CSS or custom.css
 const styles = `
 @keyframes pulse {
   0%, 100% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.1); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 0.4; }
+}
+
+@keyframes morph {
+  0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  50% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
 }
 `; 
