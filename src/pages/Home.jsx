@@ -231,40 +231,45 @@ const Home = () => {
         {/* About Me Section */}
         <section id="about" className="min-h-screen py-12 sm:py-20 flex items-center relative">
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-0 left-1/4 w-[300px] h-[300px] rounded-full"
-              style={{
-                background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
-                filter: 'blur(40px)',
-                animation: 'float 10s ease-in-out infinite'
-              }}
-            />
-            <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
-              style={{
-                background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.05) 0%, transparent 70%)',
-                filter: 'blur(40px)',
-                animation: 'float 12s ease-in-out infinite reverse'
-              }}
-            />
+            {!isMobile && (
+              <>
+                <div className="absolute top-0 left-1/4 w-[300px] h-[300px] rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
+                    filter: 'blur(40px)',
+                    animation: 'float 10s ease-in-out infinite'
+                  }}
+                />
+                <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.05) 0%, transparent 70%)',
+                    filter: 'blur(40px)',
+                    animation: 'float 12s ease-in-out infinite reverse'
+                  }}
+                />
+              </>
+            )}
           </div>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: isMobile ? 10 : 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              transition={{ duration: isMobile ? 0.5 : 0.8 }}
+              viewport={{ once: true, margin: "-50px" }}
               className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center"
             >
               {/* Image Column */}
               <motion.div 
-                whileHover={{ scale: 1.02 }}
+                whileHover={!isMobile && { scale: 1.02 }}
                 className="relative mx-auto md:mx-0 w-full max-w-[280px] sm:max-w-[320px] md:max-w-md"
               >
-                {/* Glow effect behind image */}
-                <div className="absolute inset-0 -z-10 animate-pulse-slow"
+                {/* Glow effect behind image - Simplified for mobile */}
+                <div 
+                  className={`absolute inset-0 -z-10 ${!isMobile && 'animate-pulse-slow'}`}
                   style={{
                     background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.3) 0%, transparent 70%)',
-                    filter: 'blur(40px)',
+                    filter: isMobile ? 'blur(20px)' : 'blur(40px)',
                     transform: 'translate(-10%, -10%) scale(1.2)'
                   }}
                 />
@@ -272,12 +277,14 @@ const Home = () => {
                   style={{ 
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                     background: 'rgba(255, 255, 255, 0.05)',
-                    boxShadow: '0 0 30px rgba(52, 211, 153, 0.2), inset 0 0 20px rgba(52, 211, 153, 0.1)'
+                    boxShadow: isMobile ? 
+                      '0 0 20px rgba(52, 211, 153, 0.15)' : 
+                      '0 0 30px rgba(52, 211, 153, 0.2), inset 0 0 20px rgba(52, 211, 153, 0.1)'
                   }}>
                   <img
                     src="/assets/images/my_photo.jpg"
                     alt="Adwaith"
-                    className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
+                    className={`w-full h-full object-cover object-center ${!isMobile && 'hover:scale-105 transition-transform duration-700'}`}
                     loading="eager"
                     decoding="async"
                     fetchpriority="high"
@@ -288,22 +295,24 @@ const Home = () => {
               {/* Content Column */}
               <div className="space-y-6 sm:space-y-8 text-left">
                 <motion.h2 
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: isMobile ? -10 : -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8 }}
-                  viewport={{ once: true }}
+                  transition={{ duration: isMobile ? 0.4 : 0.8 }}
+                  viewport={{ once: true, margin: "-50px" }}
                   className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 relative"
                   style={{
-                    textShadow: '0 0 20px rgba(52, 211, 153, 0.5), 0 0 40px rgba(52, 211, 153, 0.3)'
+                    textShadow: isMobile ? 
+                      '0 0 15px rgba(52, 211, 153, 0.4)' : 
+                      '0 0 20px rgba(52, 211, 153, 0.5), 0 0 40px rgba(52, 211, 153, 0.3)'
                   }}
                 >
                   About Me
                 </motion.h2>
                 <motion.div 
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: isMobile ? -10 : -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  viewport={{ once: true }}
+                  transition={{ duration: isMobile ? 0.4 : 0.8, delay: isMobile ? 0.1 : 0.2 }}
+                  viewport={{ once: true, margin: "-50px" }}
                   className="space-y-4 sm:space-y-6 text-base sm:text-lg font-grotesk"
                   style={{ color: 'rgba(255, 255, 255, 0.8)' }}
                 >
