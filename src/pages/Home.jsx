@@ -2,7 +2,7 @@ import { useTheme } from '../context/ThemeContext';
 import Skills from '../components/Skills';
 import { motion } from 'framer-motion';
 import AnimatedBackground from '../components/AnimatedBackground';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
 import { MdEmail, MdPhone } from 'react-icons/md';
 import { HiDocumentDownload } from 'react-icons/hi';
@@ -60,6 +60,16 @@ const TECH_STACK = [
 
 const Home = () => {
   const { theme } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     // Check if there's a hash in the URL
@@ -353,70 +363,85 @@ const Home = () => {
               </p>
             </motion.div>
 
-            {/* Tech Grid */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6"
-            >
-              {TECH_STACK.map((tech, index) => (
-                <motion.div
-                  key={tech.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: index * 0.1,
-                    type: "spring",
-                    stiffness: 100
-                  }}
-                  viewport={{ once: true }}
-                  whileHover={{ 
-                    scale: 1.05, 
-                    y: -5,
-                    transition: { type: "spring", stiffness: 400, damping: 10 }
-                  }}
-                  className="group relative p-6 rounded-xl backdrop-blur-sm transition-all duration-300"
-                  style={{ 
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(255, 255, 255, 0.05)',
-                    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1), 0 0 15px rgba(52, 211, 153, 0.1)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.15), 0 0 30px rgba(52, 211, 153, 0.3)';
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1), 0 0 15px rgba(52, 211, 153, 0.1)';
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                  }}
-                >
-                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500"
-                    style={{
-                      background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.2) 0%, transparent 70%)',
-                      filter: 'blur(10px)'
+            {/* Tech Grid - With glow effects */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+              {TECH_STACK.map((tech, index) => {
+                // Define color based on technology
+                const getGlowColor = (name) => {
+                  const colors = {
+                    'C++': 'rgba(0, 89, 156, 0.5)',
+                    'Python': 'rgba(255, 212, 59, 0.5)',
+                    'JavaScript': 'rgba(247, 223, 30, 0.5)',
+                    'Flutter': 'rgba(69, 208, 255, 0.5)',
+                    'Android Studio': 'rgba(82, 180, 72, 0.5)',
+                    'VS Code': 'rgba(0, 122, 204, 0.5)',
+                    'Figma': 'rgba(242, 78, 30, 0.5)',
+                    'React': 'rgba(97, 218, 251, 0.5)',
+                    'Firebase': 'rgba(255, 202, 40, 0.5)',
+                    'Git': 'rgba(240, 80, 50, 0.5)',
+                    'TensorFlow': 'rgba(255, 138, 101, 0.5)',
+                    'Tailwind CSS': 'rgba(56, 189, 248, 0.5)'
+                  };
+                  return colors[name] || 'rgba(52, 211, 153, 0.5)';
+                };
+
+                const glowColor = getGlowColor(tech.name);
+
+                return (
+                  <motion.div
+                    key={tech.name}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ 
+                      opacity: 1,
+                      transition: {
+                        duration: 0.3,
+                        delay: isMobile ? index * 0.1 : index * 0.15
+                      }
                     }}
-                  />
-                  
-                  <div className="relative flex flex-col items-center gap-3">
-                    <motion.img
-                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                      transition={{ duration: 0.5 }}
-                      src={tech.icon}
-                      alt={tech.name}
-                      className="w-12 h-12 object-contain"
+                    viewport={{ once: true, margin: "-50px" }}
+                    className={`
+                      relative p-4 rounded-xl 
+                      bg-white/5 backdrop-blur-sm
+                      border border-white/10
+                      transition-all duration-200
+                      group cursor-pointer
+                      overflow-hidden
+                      hover:bg-white/10
+                      ${!isMobile && 'hover:-translate-y-1 hover:scale-105'}
+                    `}
+                    style={{
+                      boxShadow: `0 0 20px ${glowColor.replace('0.5', '0.15')}`,
+                    }}
+                  >
+                    {/* Glow effect overlay */}
+                    <div 
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-200"
+                      style={{
+                        background: `radial-gradient(circle at center, ${glowColor}, transparent 70%)`,
+                        filter: 'blur(8px)',
+                        transform: 'scale(1.1)',
+                      }}
                     />
-                    <p className="text-sm font-medium text-center transition-colors duration-300 font-grotesk"
-                      style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                      {tech.name}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
+
+                    <div className="relative flex flex-col items-center gap-3">
+                      <img
+                        src={tech.icon}
+                        alt={tech.name}
+                        className={`
+                          w-8 h-8 sm:w-10 sm:h-10 object-contain
+                          transition-all duration-200 ease-out
+                          ${!isMobile && 'group-hover:scale-125 group-hover:rotate-3'}
+                        `}
+                        loading="lazy"
+                      />
+                      <p className="text-xs sm:text-sm font-medium text-center font-grotesk text-white/80 group-hover:text-white transition-colors duration-200">
+                        {tech.name}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </section>
       </div>
