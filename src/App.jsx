@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from './context/ThemeContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Hackathons from './pages/Hackathons';
 import Blog from './pages/Blog';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollToTop from './components/ScrollToTop';
+import { ProjectsProvider } from './context/ProjectsContext';
+import Admin from './pages/Admin';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -227,6 +231,15 @@ function AppContent() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/login" element={<Login />} />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </main>
 
@@ -266,9 +279,14 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <ThemeProvider>
+      <ProjectsProvider>
+        <Router>
+          <ScrollToTop />
+          <AppContent />
+        </Router>
+      </ProjectsProvider>
+    </ThemeProvider>
   );
 }
 
