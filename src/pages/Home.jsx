@@ -91,7 +91,7 @@ const Home = () => {
   const contactLinks = [
     {
       name: 'GitHub',
-      href: 'https://github.com/traffix',
+      href: 'https://github.com/kichuman28',
       icon: <FaGithub className="w-6 h-6" />
     },
     {
