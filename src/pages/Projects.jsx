@@ -2,10 +2,14 @@ import { motion } from 'framer-motion';
 import { useProjects } from '../context/ProjectsContext';
 import { useState, useEffect } from 'react';
 import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+
+const MAX_DESCRIPTION_LENGTH = 200; // Increased to accommodate 4 lines
 
 const Projects = () => {
   const { projects, loading, error } = useProjects();
   const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -32,8 +36,22 @@ const Projects = () => {
     );
   }
 
+  const handleProjectClick = (projectId, e) => {
+    if (e.target.closest('a') || e.target.closest('button')) {
+      e.stopPropagation();
+      return;
+    }
+    navigate(`/projects/${projectId}`);
+  };
+
+  const truncateDescription = (description) => {
+    if (!description) return '';
+    if (description.length <= MAX_DESCRIPTION_LENGTH) return description;
+    return description.slice(0, MAX_DESCRIPTION_LENGTH).trim() + '...';
+  };
+
   return (
-    <div className="min-h-screen py-12 sm:py-20">
+    <div className="min-h-screen py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,11 +79,12 @@ const Projects = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: isMobile ? index * 0.1 : index * 0.2 }}
               viewport={{ once: true, margin: "-50px" }}
-              className="group relative bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden"
+              className="group relative bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden cursor-pointer"
               style={{
                 boxShadow: '0 0 20px rgba(52, 211, 153, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
+              onClick={(e) => handleProjectClick(project.id, e)}
             >
               {/* Project Image */}
               <div className="aspect-video overflow-hidden">
@@ -82,8 +101,8 @@ const Projects = () => {
                 <h3 className="text-xl font-bold mb-2 text-white group-hover:text-emerald-400 transition-colors duration-300">
                   {project.title}
                 </h3>
-                <p className="text-white/70 mb-4 font-grotesk line-clamp-3">
-                  {project.description}
+                <p className="text-white/70 mb-4 font-grotesk h-[6rem] overflow-hidden">
+                  {truncateDescription(project.shortDescription || project.description)}
                 </p>
 
                 {/* Technologies */}
@@ -99,15 +118,16 @@ const Projects = () => {
                 </div>
 
                 {/* Links */}
-                <div className="flex gap-4">
+                <div className="flex gap-4 mt-auto z-10 relative">
                   {project.githubLink && (
                     <a
                       href={project.githubLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white/70 hover:text-emerald-400 transition-colors duration-300"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors duration-300"
                     >
-                      <FaGithub className="w-6 h-6" />
+                      <FaGithub className="w-5 h-5" />
+                      <span>View Source</span>
                     </a>
                   )}
                   {project.liveLink && (
@@ -115,9 +135,10 @@ const Projects = () => {
                       href={project.liveLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-white/70 hover:text-emerald-400 transition-colors duration-300"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-300"
                     >
-                      <FaExternalLinkAlt className="w-5 h-5" />
+                      <FaExternalLinkAlt className="w-4 h-4" />
+                      <span>Live Demo</span>
                     </a>
                   )}
                 </div>
@@ -131,6 +152,6 @@ const Projects = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Projects; 

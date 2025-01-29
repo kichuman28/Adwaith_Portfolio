@@ -11,6 +11,7 @@ import { ProjectsProvider } from './context/ProjectsContext';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProjectDetails from './pages/ProjectDetails';
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -229,6 +230,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:projectId" element={<ProjectDetails />} />
           <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/login" element={<Login />} />
