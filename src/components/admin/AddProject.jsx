@@ -4,6 +4,8 @@ import { db } from '../../config/firebase';
 import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
 
+const MAX_SHORT_DESCRIPTION_LENGTH = 150;
+
 const AddProject = ({ setMessage, editingItem, onCancel }) => {
   const [formData, setFormData] = useState({
     title: '',
@@ -231,12 +233,20 @@ const AddProject = ({ setMessage, editingItem, onCancel }) => {
       <div>
         <label className="block text-sm font-medium text-white/80 mb-2">
           Short Description (shown in cards)
+          <span className={`ml-2 ${
+            formData.shortDescription.length >= MAX_SHORT_DESCRIPTION_LENGTH 
+              ? 'text-red-400' 
+              : 'text-white/60'
+          }`}>
+            ({formData.shortDescription.length}/{MAX_SHORT_DESCRIPTION_LENGTH} characters)
+          </span>
         </label>
         <textarea
           name="shortDescription"
           value={formData.shortDescription}
           onChange={handleChange}
           required
+          maxLength={MAX_SHORT_DESCRIPTION_LENGTH}
           rows="3"
           className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
           placeholder="A brief overview of the project (will be shown in project cards)"
