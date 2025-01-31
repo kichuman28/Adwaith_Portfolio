@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import axios from 'axios';
+import { FaTimes } from 'react-icons/fa';
 
 const AddBlog = ({ setMessage, editingItem, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -9,8 +10,10 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
     summary: '',
     content: '',
     tags: '',
-    image: null,
-    readTime: ''
+    coverImage: null,
+    coverImagePreview: null,
+    readTime: '',
+    status: 'published' // or 'draft'
   });
   const [loading, setLoading] = useState(false);
 
@@ -21,17 +24,40 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
         summary: editingItem.summary || '',
         content: editingItem.content || '',
         tags: editingItem.tags?.join(', ') || '',
+        coverImage: null,
+        coverImagePreview: editingItem.coverImageUrl || null,
         readTime: editingItem.readTime || '',
-        image: null
+        status: editingItem.status || 'published'
       });
     }
   }, [editingItem]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+    
+    if (name === 'coverImage' && files?.[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          coverImage: files[0],
+          coverImagePreview: reader.result
+        }));
+      };
+      reader.readAsDataURL(files[0]);
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleRemoveImage = () => {
     setFormData(prev => ({
       ...prev,
-      [name]: files ? files[0] : value
+      coverImage: null,
+      coverImagePreview: null
     }));
   };
 
@@ -58,10 +84,10 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
     setMessage({ type: '', text: '' });
 
     try {
-      let imageUrl = editingItem?.imageUrl || '';
+      let coverImageUrl = formData.coverImagePreview;
 
-      if (formData.image) {
-        imageUrl = await uploadToCloudinary(formData.image);
+      if (formData.coverImage) {
+        coverImageUrl = await uploadToCloudinary(formData.coverImage);
       }
 
       const blogData = {
@@ -69,8 +95,9 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
         summary: formData.summary,
         content: formData.content,
         tags: formData.tags.split(',').map(tag => tag.trim()),
+        coverImageUrl,
         readTime: formData.readTime,
-        imageUrl,
+        status: formData.status,
         updatedAt: serverTimestamp()
       };
 
@@ -90,13 +117,15 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
         summary: '',
         content: '',
         tags: '',
+        coverImage: null,
+        coverImagePreview: null,
         readTime: '',
-        image: null
+        status: 'published'
       });
-      
+
       if (onCancel) onCancel();
     } catch (error) {
-      console.error('Error saving blog post:', error);
+      console.error('Error saving blog:', error);
       setMessage({ type: 'error', text: 'Error saving blog post. Please try again.' });
     } finally {
       setLoading(false);
@@ -122,7 +151,7 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
 
       <div>
         <label className="block text-sm font-medium text-white/80 mb-2">
-          Blog Title
+          Title
         </label>
         <input
           type="text"
@@ -131,6 +160,7 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
           onChange={handleChange}
           required
           className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+          placeholder="Enter blog title"
         />
       </div>
 
@@ -145,7 +175,7 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
           required
           rows="3"
           className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-          placeholder="A brief summary of the blog post"
+          placeholder="Brief summary of the blog post"
         />
       </div>
 
@@ -158,9 +188,9 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
           value={formData.content}
           onChange={handleChange}
           required
-          rows="12"
+          rows="10"
           className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 font-mono"
-          placeholder="Write your blog post content here..."
+          placeholder="Write your blog content here (Markdown supported)"
         />
       </div>
 
@@ -196,15 +226,57 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
 
       <div>
         <label className="block text-sm font-medium text-white/80 mb-2">
-          Cover Image {editingItem?.imageUrl && '(Leave empty to keep current image)'}
+          Status
         </label>
-        <input
-          type="file"
-          name="image"
+        <select
+          name="status"
+          value={formData.status}
           onChange={handleChange}
-          accept="image/*"
           className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
-        />
+        >
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-white/80 mb-2">
+          Cover Image {editingItem?.coverImageUrl && '(Leave empty to keep current image)'}
+        </label>
+        {formData.coverImagePreview ? (
+          <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-4">
+            <img
+              src={formData.coverImagePreview}
+              alt="Cover"
+              className="w-full h-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              className="absolute top-2 right-2 p-2 bg-red-500/80 text-white rounded-full hover:bg-red-600/80 transition-colors"
+            >
+              <FaTimes />
+            </button>
+          </div>
+        ) : (
+          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-white/10 border-dashed rounded-lg hover:border-emerald-400/50 transition-colors">
+            <div className="space-y-1 text-center">
+              <div className="flex text-sm text-white/60">
+                <label htmlFor="cover-image" className="relative cursor-pointer rounded-md font-medium text-emerald-400 hover:text-emerald-300">
+                  <span>Upload cover image</span>
+                  <input
+                    id="cover-image"
+                    name="coverImage"
+                    type="file"
+                    className="sr-only"
+                    accept="image/*"
+                    onChange={handleChange}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <button

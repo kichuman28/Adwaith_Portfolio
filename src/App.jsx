@@ -13,6 +13,9 @@ import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProjectDetails from './pages/ProjectDetails';
 import HackathonDetails from './pages/HackathonDetails';
+import Blogs from './pages/Blogs';
+import BlogPost from './pages/BlogPost';
+import AddBlog from './components/admin/AddBlog';
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -244,6 +247,9 @@ function AppContent() {
               </ProtectedRoute>
             } 
           />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<BlogPost />} />
+          <Route path="/admin/add-blog" element={<AddBlog />} />
         </Routes>
       </main>
 
