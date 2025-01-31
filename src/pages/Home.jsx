@@ -3,9 +3,10 @@ import Skills from '../components/Skills';
 import { motion } from 'framer-motion';
 import AnimatedBackground from '../components/AnimatedBackground';
 import { useEffect, useState } from 'react';
-import { FaGithub, FaLinkedin, FaCode } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaCode, FaProjectDiagram, FaTrophy, FaBlog } from 'react-icons/fa';
 import { MdEmail, MdPhone } from 'react-icons/md';
 import { HiDocumentDownload } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const TECH_STACK = [
   {
@@ -116,6 +117,30 @@ const Home = () => {
     }
   ];
 
+  const navigationCards = [
+    {
+      title: 'Projects',
+      icon: <FaProjectDiagram className="w-6 h-6" />,
+      description: 'Check out my portfolio of projects',
+      to: '/projects',
+      gradient: 'from-emerald-400 to-teal-400'
+    },
+    {
+      title: 'Hackathons',
+      icon: <FaTrophy className="w-6 h-6" />,
+      description: 'View my hackathon experiences',
+      to: '/hackathons',
+      gradient: 'from-teal-400 to-cyan-400'
+    },
+    {
+      title: 'Blog',
+      icon: <FaBlog className="w-6 h-6" />,
+      description: 'Read my latest blog posts',
+      to: '/blog',
+      gradient: 'from-cyan-400 to-emerald-400'
+    }
+  ];
+
   return (
     <main className="relative">
       <AnimatedBackground />
@@ -195,6 +220,44 @@ const Home = () => {
                   </motion.a>
                 ))}
               </motion.div>
+
+              {/* Mobile Navigation Cards - Only show on mobile */}
+              {isMobile && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="mt-12 space-y-4 px-4"
+                >
+                  {navigationCards.map((card, index) => (
+                    <Link key={card.title} to={card.to}>
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="relative group rounded-xl p-4 backdrop-blur-sm"
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                        }}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`p-3 rounded-lg bg-gradient-to-r ${card.gradient} text-black`}>
+                            {card.icon}
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                              {card.title}
+                            </h3>
+                            <p className="text-sm text-white/60">
+                              {card.description}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
 
               {/* Resume Button */}
               <motion.div 
