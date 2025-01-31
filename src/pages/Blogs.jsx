@@ -11,19 +11,26 @@ const Blogs = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // First, create a simpler query without composite requirements
     const blogsQuery = query(
       collection(db, 'blogs'),
-      where('status', '==', 'published'),
       orderBy('createdAt', 'desc')
     );
 
     const unsubscribe = onSnapshot(blogsQuery, (snapshot) => {
-      const blogsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      console.log('Fetched blogs:', blogsData); // Debug log
+      const blogsData = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        // Filter published posts after fetching
+        .filter(blog => blog.status === 'published');
+
+      console.log('Fetched blogs:', blogsData);
       setBlogs(blogsData);
+      setLoading(false);
+    }, (error) => {
+      console.error('Error fetching blogs:', error);
       setLoading(false);
     });
 
