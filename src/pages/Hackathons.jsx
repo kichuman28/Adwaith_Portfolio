@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaTrophy, FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const MAX_DESCRIPTION_LENGTH = 200;
@@ -48,11 +48,7 @@ const Hackathons = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleHackathonClick = (hackathonId, e) => {
-    if (e.target.closest('a') || e.target.closest('button')) {
-      e.stopPropagation();
-      return;
-    }
+  const handleHackathonClick = (hackathonId) => {
     navigate(`/hackathons/${hackathonId}`);
   };
 
@@ -99,43 +95,39 @@ const Hackathons = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: isMobile ? index * 0.1 : index * 0.2 }}
               viewport={{ once: true, margin: "-50px" }}
-              className="group relative bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden cursor-pointer"
+              className="group relative bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden"
               style={{
                 boxShadow: '0 0 20px rgba(52, 211, 153, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.1)'
               }}
-              onClick={(e) => handleHackathonClick(hackathon.id, e)}
             >
-              {/* Hackathon Image */}
-              <div className="aspect-video overflow-hidden">
+              {/* Hackathon Image with Gradient Overlay */}
+              <div className="aspect-[4/3] overflow-hidden relative">
                 <img
                   src={hackathon.imageUrl}
                   alt={hackathon.title}
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                
+                {/* Position Badge */}
+                {hackathon.position && (
+                  <div className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-400/20 backdrop-blur-md border border-emerald-400/30">
+                    <FaTrophy className="w-4 h-4 text-emerald-400" />
+                    <span className="text-emerald-400 font-medium">{hackathon.position}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Hackathon Content */}
+              {/* Content */}
               <div className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
-                    {hackathon.title}
-                  </h3>
-                  {hackathon.position && (
-                    <span className="px-3 py-1 text-sm rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
-                      🏆 {hackathon.position}
-                    </span>
-                  )}
-                </div>
+                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors duration-300">
+                  {hackathon.title}
+                </h3>
 
-                <p className="text-white/70 mb-4 font-grotesk h-[6rem] overflow-hidden">
-                  {truncateDescription(hackathon.description)}
-                </p>
-
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {hackathon.technologies.map((tech, i) => (
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {hackathon.technologies.slice(0, 3).map((tech, i) => (
                     <span
                       key={i}
                       className="px-3 py-1 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
@@ -143,37 +135,22 @@ const Hackathons = () => {
                       {tech}
                     </span>
                   ))}
+                  {hackathon.technologies.length > 3 && (
+                    <span className="px-3 py-1 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                      +{hackathon.technologies.length - 3} more
+                    </span>
+                  )}
                 </div>
 
-                {/* Links */}
-                <div className="flex gap-4 mt-auto z-10 relative">
-                  {hackathon.githubLink && (
-                    <a
-                      href={hackathon.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors duration-300"
-                    >
-                      <FaGithub className="w-5 h-5" />
-                      <span>View Source</span>
-                    </a>
-                  )}
-                  {hackathon.demoLink && (
-                    <a
-                      href={hackathon.demoLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-300"
-                    >
-                      <FaExternalLinkAlt className="w-4 h-4" />
-                      <span>Live Demo</span>
-                    </a>
-                  )}
-                </div>
+                {/* View Details Button */}
+                <button
+                  onClick={() => handleHackathonClick(hackathon.id)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-all duration-300 group-hover:-translate-y-1"
+                >
+                  <span>View Details</span>
+                  <FaArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
               </div>
-
-              {/* Hover Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </motion.div>
           ))}
         </div>
