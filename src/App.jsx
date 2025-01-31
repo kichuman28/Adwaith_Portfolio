@@ -23,10 +23,15 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navItems = ['Projects', 'Hackathons', 'Blog'];
+  const navItems = [
+    { name: 'Skills', path: '/#skills', isScroll: true },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Hackathons', path: '/hackathons' },
+    { name: 'Blogs', path: '/blogs' }
+  ];
   
   const handleNavClick = (item) => {
-    if (item === 'Skills') {
+    if (item.isScroll) {
       if (location.pathname !== '/') {
         navigate('/#skills');
       } else {
@@ -41,12 +46,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen relative overflow-x-hidden" style={{ background: theme.background, color: theme.text.primary }}>
-      {/* Enhanced Floating Navbar */}
-      <div className="fixed top-0 left-0 right-0 w-full flex justify-center p-2 sm:p-4 z-50">
-        <motion.nav 
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+      {/* Navigation Menu */}
+      <nav className="fixed top-0 left-0 right-0 w-full flex justify-center p-2 sm:p-4 z-50">
+        <motion.div 
           className="w-[98%] sm:w-[95%] max-w-7xl rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-lg"
           style={{ 
             background: `${theme.secondary}80`,
@@ -82,152 +84,72 @@ function AppContent() {
               </motion.div>
               
               {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-2">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <button
-                    onClick={() => handleNavClick('Skills')}
-                    className="px-4 py-2 rounded-xl relative group font-grotesk"
-                    style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                  >
-                    <span className="relative z-10 font-medium">Skills</span>
-                    <motion.span
-                      className="absolute inset-0 rounded-xl -z-10"
-                      style={{ 
-                        background: `linear-gradient(135deg, ${theme.accent}20, ${theme.accent}05)`,
-                        boxShadow: `0 0 20px ${theme.accent}20`
-                      }}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      whileHover={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </button>
-                </motion.div>
+              <div className="hidden sm:flex items-center space-x-1">
                 {navItems.map((item) => (
                   <motion.div
-                    key={item}
+                    key={item.name}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Link
-                      to={`/${item.toLowerCase()}`}
-                      className="px-4 py-2 rounded-xl relative group font-grotesk"
-                      style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                    >
-                      <span className="relative z-10 font-medium">{item}</span>
-                      <motion.span
-                        className="absolute inset-0 rounded-xl -z-10"
-                        style={{ 
-                          background: `linear-gradient(135deg, ${theme.accent}20, ${theme.accent}05)`,
-                          boxShadow: `0 0 20px ${theme.accent}20`
-                        }}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        whileHover={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </Link>
+                    {item.isScroll ? (
+                      <button
+                        onClick={() => handleNavClick(item)}
+                        className="px-4 py-2 rounded-xl relative group font-grotesk"
+                        style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                      >
+                        <span className="relative z-10 font-medium">{item.name}</span>
+                      </button>
+                    ) : (
+                      <Link
+                        to={item.path}
+                        className="px-4 py-2 rounded-xl relative group font-grotesk"
+                        style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <span className="relative z-10 font-medium">{item.name}</span>
+                      </Link>
+                    )}
                   </motion.div>
                 ))}
               </div>
 
-              {/* Mobile menu button */}
-              <motion.div 
-                className="md:hidden flex items-center"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="inline-flex items-center justify-center p-2 rounded-xl transition-colors duration-200"
-                  style={{ 
-                    color: 'rgba(255, 255, 255, 0.9)',
-                    background: isMenuOpen ? `${theme.accent}20` : 'transparent',
-                    boxShadow: isMenuOpen ? `0 0 20px ${theme.accent}20` : 'none'
-                  }}
-                >
-                  <svg
-                    className="w-6 h-6"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <motion.path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      variants={{
-                        closed: { d: "M4 6h16M4 12h16M4 18h16" },
-                        open: { d: "M6 18L18 6M6 6l12 12" }
-                      }}
-                      animate={isMenuOpen ? "open" : "closed"}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </svg>
-                </button>
-              </motion.div>
+              {/* Mobile Navigation */}
+              <div className="sm:hidden">
+                {isMenuOpen && (
+                  <div className="px-2 py-3 space-y-1">
+                    {navItems.map((item) => (
+                      <motion.div
+                        key={item.name}
+                        whileHover={{ x: 10 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {item.isScroll ? (
+                          <button
+                            onClick={() => handleNavClick(item)}
+                            className="block w-full text-left px-4 py-2 rounded-xl font-grotesk"
+                            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                          >
+                            {item.name}
+                          </button>
+                        ) : (
+                          <Link
+                            to={item.path}
+                            className="block px-4 py-2 rounded-xl font-grotesk"
+                            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {item.name}
+                          </Link>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </motion.nav>
-      </div>
-
-      {/* Animated Mobile Navigation */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-x-0 top-20 sm:top-24 p-2 sm:p-4 md:hidden z-40"
-          >
-            <motion.div 
-              className="w-[98%] sm:w-[95%] mx-auto rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-lg overflow-hidden"
-              style={{ 
-                background: `${theme.secondary}90`,
-                borderBottom: `1px solid ${theme.accent}20`,
-                boxShadow: `0 10px 30px -10px ${theme.accent}30`
-              }}
-              initial={{ height: 0 }}
-              animate={{ height: "auto" }}
-              exit={{ height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="px-2 py-3 space-y-1">
-                <motion.div
-                  whileHover={{ x: 10 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <button
-                    onClick={() => handleNavClick('Skills')}
-                    className="block w-full text-left px-4 py-2 rounded-xl font-grotesk"
-                    style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                  >
-                    Skills
-                  </button>
-                </motion.div>
-                {navItems.map((item) => (
-                  <motion.div
-                    key={item}
-                    whileHover={{ x: 10 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Link
-                      to={`/${item.toLowerCase()}`}
-                      className="block px-4 py-2 rounded-xl font-grotesk"
-                      style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-                      onClick={() => handleNavClick(item)}
-                    >
-                      {item}
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      </nav>
 
       {/* Main Content */}
       <main className="relative">
@@ -237,7 +159,8 @@ function AppContent() {
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
           <Route path="/hackathons" element={<Hackathons />} />
           <Route path="/hackathons/:id" element={<HackathonDetails />} />
-          <Route path="/blog" element={<Blog />} />
+          <Route path="/blogs" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<BlogPost />} />
           <Route path="/login" element={<Login />} />
           <Route 
             path="/admin" 
@@ -247,8 +170,6 @@ function AppContent() {
               </ProtectedRoute>
             } 
           />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/blogs/:id" element={<BlogPost />} />
           <Route path="/admin/add-blog" element={<AddBlog />} />
         </Routes>
       </main>

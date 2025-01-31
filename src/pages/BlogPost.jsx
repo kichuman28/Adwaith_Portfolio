@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { motion } from 'framer-motion';
-import { FaCalendar, FaClock, FaTags, FaArrowLeft } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaCalendar, FaClock, FaArrowLeft, FaImage, FaTimes } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -14,13 +14,17 @@ const BlogPost = () => {
   const navigate = useNavigate();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showGallery, setShowGallery] = useState(false);
 
   useEffect(() => {
     const fetchBlog = async () => {
       try {
         const blogDoc = await getDoc(doc(db, 'blogs', id));
         if (blogDoc.exists()) {
-          setBlog({ id: blogDoc.id, ...blogDoc.data() });
+          const data = { id: blogDoc.id, ...blogDoc.data() };
+          console.log('Fetched blog:', data); // Debug log
+          setBlog(data);
         }
         setLoading(false);
       } catch (error) {
@@ -92,18 +96,6 @@ const BlogPost = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mb-8"
         >
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {blog.tags.map((tag, i) => (
-              <span
-                key={i}
-                className="px-2 py-1 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
           {/* Title */}
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400"
             style={{
@@ -114,15 +106,26 @@ const BlogPost = () => {
           </h1>
 
           {/* Meta Info */}
-          <div className="flex items-center gap-4 text-sm text-white/60">
-            <div className="flex items-center gap-2">
-              <FaCalendar className="w-4 h-4" />
-              <span>{new Date(blog.createdAt?.toDate()).toLocaleDateString()}</span>
+          <div className="flex items-center justify-between text-sm text-white/60">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <FaCalendar className="w-4 h-4" />
+                <span>{new Date(blog.createdAt?.toDate()).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaClock className="w-4 h-4" />
+                <span>{blog.readTime}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <FaClock className="w-4 h-4" />
-              <span>{blog.readTime}</span>
-            </div>
+            {blog.contentImageUrls?.length > 0 && (
+              <button
+                onClick={() => setShowGallery(true)}
+                className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors"
+              >
+                <FaImage className="w-4 h-4" />
+                <span>{blog.contentImageUrls.length} Images</span>
+              </button>
+            )}
           </div>
         </motion.div>
 
@@ -152,6 +155,23 @@ const BlogPost = () => {
                     {children}
                   </code>
                 );
+              },
+              img({ src, alt }) {
+                // Check if the image is from the content images
+                const contentImage = blog.contentImageUrls?.find(url => url === src);
+                if (contentImage) {
+                  return (
+                    <div className="my-8">
+                      <img
+                        src={contentImage}
+                        alt={alt}
+                        className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => setSelectedImage(contentImage)}
+                      />
+                    </div>
+                  );
+                }
+                return <img src={src} alt={alt} />;
               }
             }}
           >
@@ -159,6 +179,84 @@ const BlogPost = () => {
           </ReactMarkdown>
         </motion.div>
       </div>
+
+      {/* Image Gallery Modal */}
+      <AnimatePresence>
+        {showGallery && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm"
+          >
+            <div className="absolute inset-0 overflow-y-auto">
+              <div className="min-h-full p-4 flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-white">Gallery</h3>
+                  <button
+                    onClick={() => setShowGallery(false)}
+                    className="p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                  >
+                    <FaTimes className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {blog.contentImageUrls?.map((imageUrl, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="relative aspect-video group"
+                    >
+                      <img
+                        src={imageUrl}
+                        alt={`Gallery ${index + 1}`}
+                        className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => setSelectedImage(imageUrl)}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Image Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            onClick={() => setSelectedImage(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="relative max-w-[90vw] max-h-[90vh]"
+              onClick={e => e.stopPropagation()}
+            >
+              <img
+                src={selectedImage}
+                alt="Full size"
+                className="w-full h-full object-contain rounded-lg"
+              />
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <FaTimes className="w-6 h-6" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
