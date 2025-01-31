@@ -1,147 +1,178 @@
-import { useState } from 'react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db, auth } from '../config/firebase';
-import { motion } from 'framer-motion';
-import axios from 'axios';
-import { signOut } from 'firebase/auth';
+import { useState, useEffect } from 'react';
+import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { db } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
+import ProjectList from '../components/admin/ProjectList';
+import HackathonList from '../components/admin/HackathonList';
 import AddProject from '../components/admin/AddProject';
-import AddBlog from '../components/admin/AddBlog';
 import AddHackathon from '../components/admin/AddHackathon';
-import ManageContent from '../components/admin/ManageContent';
 import Toast from '../components/Toast';
+import { motion } from 'framer-motion';
 
 const Admin = () => {
-  const [activeSection, setActiveSection] = useState('dashboard');
-  const [activeType, setActiveType] = useState('projects');
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [projects, setProjects] = useState([]);
+  const [hackathons, setHackathons] = useState([]);
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [isAdding, setIsAdding] = useState(false);
-  const [editingItem, setEditingItem] = useState(null);
+  const [editingProject, setEditingProject] = useState(null);
+  const [editingHackathon, setEditingHackathon] = useState(null);
+  const [showAddProject, setShowAddProject] = useState(false);
+  const [showAddHackathon, setShowAddHackathon] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      navigate('/login');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
+  useEffect(() => {
+    const projectsQuery = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+    const hackathonsQuery = query(collection(db, 'hackathons'), orderBy('date', 'desc'));
+
+    const unsubscribeProjects = onSnapshot(projectsQuery, (snapshot) => {
+      const projectsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setProjects(projectsData);
+    });
+
+    const unsubscribeHackathons = onSnapshot(hackathonsQuery, (snapshot) => {
+      const hackathonsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setHackathons(hackathonsData);
+    });
+
+    return () => {
+      unsubscribeProjects();
+      unsubscribeHackathons();
+    };
+  }, []);
+
+  const handleEditProject = (project) => {
+    setEditingProject(project);
+    setShowAddProject(true);
   };
 
-  const handleEdit = (item) => {
-    setEditingItem(item);
-    setIsAdding(true);
+  const handleEditHackathon = (hackathon) => {
+    setEditingHackathon(hackathon);
+    setShowAddHackathon(true);
   };
 
-  const sections = [
-    { id: 'dashboard', label: 'Dashboard' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'blogs', label: 'Blogs' },
-    { id: 'hackathons', label: 'Hackathons' }
-  ];
+  const handleCancelEdit = () => {
+    setEditingProject(null);
+    setEditingHackathon(null);
+    setShowAddProject(false);
+    setShowAddHackathon(false);
+  };
 
   const renderContent = () => {
-    if (activeSection === 'dashboard') {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.slice(1).map(section => (
-            <motion.div
-              key={section.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-white/5 backdrop-blur-sm rounded-xl p-6 cursor-pointer"
-              onClick={() => setActiveSection(section.id)}
-            >
-              <h3 className="text-xl font-bold text-white mb-2">Manage {section.label}</h3>
-              <p className="text-white/60">Add, edit, or remove {section.label.toLowerCase()}</p>
-            </motion.div>
-          ))}
-        </div>
-      );
+    switch (activeTab) {
+      case 'dashboard':
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6">
+              <h3 className="text-xl font-bold text-white mb-2">Projects</h3>
+              <p className="text-white/60">{projects.length} projects</p>
+            </div>
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6">
+              <h3 className="text-xl font-bold text-white mb-2">Hackathons</h3>
+              <p className="text-white/60">{hackathons.length} hackathons</p>
+            </div>
+          </div>
+        );
+      case 'projects':
+        return showAddProject ? (
+          <AddProject
+            setMessage={setMessage}
+            editingItem={editingProject}
+            onCancel={handleCancelEdit}
+          />
+        ) : (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-white">Manage projects</h2>
+              <button
+                onClick={() => setShowAddProject(true)}
+                className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-200"
+              >
+                Add New Project
+              </button>
+            </div>
+            <ProjectList
+              projects={projects}
+              onEdit={handleEditProject}
+              setMessage={setMessage}
+            />
+          </div>
+        );
+      case 'hackathons':
+        return showAddHackathon ? (
+          <AddHackathon
+            setMessage={setMessage}
+            editingItem={editingHackathon}
+            onCancel={handleCancelEdit}
+          />
+        ) : (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-white">Manage hackathons</h2>
+              <button
+                onClick={() => setShowAddHackathon(true)}
+                className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-200"
+              >
+                Add New hackathon
+              </button>
+            </div>
+            <HackathonList
+              hackathons={hackathons}
+              onEdit={handleEditHackathon}
+              setMessage={setMessage}
+            />
+          </div>
+        );
+      default:
+        return null;
     }
-
-    if (isAdding) {
-      switch (activeSection) {
-        case 'projects':
-          return <AddProject setMessage={setMessage} editingItem={editingItem} onCancel={() => { setIsAdding(false); setEditingItem(null); }} />;
-        case 'blogs':
-          return <AddBlog setMessage={setMessage} editingItem={editingItem} onCancel={() => { setIsAdding(false); setEditingItem(null); }} />;
-        case 'hackathons':
-          return <AddHackathon setMessage={setMessage} editingItem={editingItem} onCancel={() => { setIsAdding(false); setEditingItem(null); }} />;
-        default:
-          return null;
-      }
-    }
-
-    return (
-      <>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Manage {activeSection}</h2>
-          <button
-            onClick={() => setIsAdding(true)}
-            className="px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-200"
-          >
-            Add New {activeSection.slice(0, -1)}
-          </button>
-        </div>
-        <ManageContent
-          type={activeSection}
-          onEdit={handleEdit}
-          setMessage={setMessage}
-        />
-      </>
-    );
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-12 px-4 sm:px-6 lg:px-8">
-      <Toast 
-        message={message} 
-        onClose={() => setMessage({ type: '', text: '' })} 
-      />
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white/5 backdrop-blur-lg rounded-xl p-6 sm:p-8 shadow-xl"
-        >
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400">
-              Admin Panel
-            </h2>
+    <div className="min-h-screen py-24 sm:py-32">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center mb-8">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 font-audiowide"
+          >
+            Admin Panel
+          </motion.h1>
+          <button
+            onClick={() => navigate('/login')}
+            className="px-4 py-2 rounded-lg bg-red-400/20 text-red-400 hover:bg-red-400/30 transition-colors duration-200"
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className="flex space-x-4 mb-8">
+          {['Dashboard', 'Projects', 'Blogs', 'Hackathons'].map((tab) => (
             <button
-              onClick={handleLogout}
-              className="px-4 py-2 rounded-lg bg-red-400/10 text-red-400 hover:bg-red-400/20 transition-colors duration-200"
+              key={tab}
+              onClick={() => setActiveTab(tab.toLowerCase())}
+              className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                activeTab === tab.toLowerCase()
+                  ? 'bg-emerald-400/20 text-emerald-400'
+                  : 'text-white/60 hover:text-white hover:bg-white/10'
+              }`}
             >
-              Logout
+              {tab}
             </button>
-          </div>
+          ))}
+        </div>
 
-          {/* Navigation */}
-          <div className="flex space-x-4 mb-8 overflow-x-auto pb-2">
-            {sections.map(section => (
-              <button
-                key={section.id}
-                onClick={() => {
-                  setActiveSection(section.id);
-                  setIsAdding(false);
-                  setEditingItem(null);
-                }}
-                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-200 ${
-                  activeSection === section.id
-                    ? 'bg-emerald-400/20 text-emerald-400'
-                    : 'text-white/60 hover:text-white/80'
-                }`}
-              >
-                {section.label}
-              </button>
-            ))}
-          </div>
-
-          {renderContent()}
-        </motion.div>
+        {renderContent()}
       </div>
+
+      <Toast message={message} onClose={() => setMessage({ type: '', text: '' })} />
     </div>
   );
 };
