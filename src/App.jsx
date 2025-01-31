@@ -12,6 +12,7 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProjectDetails from './pages/ProjectDetails';
+import HackathonDetails from './pages/HackathonDetails';
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -232,6 +233,7 @@ function AppContent() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
           <Route path="/hackathons" element={<Hackathons />} />
+          <Route path="/hackathons/:id" element={<HackathonDetails />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/login" element={<Login />} />
           <Route 
