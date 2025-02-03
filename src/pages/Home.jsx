@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 const TECH_STACK = [
   {
-    name: "C++",
+    name: "C/C++",
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
   },
   {
@@ -54,8 +54,8 @@ const TECH_STACK = [
     icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
   },
   {
-    name: "Tailwind CSS",
-    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg"
+    name: "Java",
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
   }
 ];
 
@@ -509,7 +509,7 @@ const Home = () => {
                     'Firebase': 'rgba(255, 202, 40, 0.5)',
                     'Git': 'rgba(240, 80, 50, 0.5)',
                     'TensorFlow': 'rgba(255, 138, 101, 0.5)',
-                    'Tailwind CSS': 'rgba(56, 189, 248, 0.5)'
+                    'Java': 'rgba(231, 111, 0, 0.5)'
                   };
                   return colors[name] || 'rgba(52, 211, 153, 0.5)';
                 };
@@ -523,8 +523,8 @@ const Home = () => {
                     whileInView={{ 
                       opacity: 1,
                       transition: {
-                        duration: 0.3,
-                        delay: isMobile ? index * 0.1 : index * 0.15
+                        duration: 0.2,
+                        delay: isMobile ? index * 0.05 : index * 0.08
                       }
                     }}
                     viewport={{ once: true, margin: "-50px" }}

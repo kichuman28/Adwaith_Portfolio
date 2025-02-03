@@ -147,11 +147,12 @@ function AppContent() {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: -20, opacity: 0 }}
                         transition={{ duration: 0.2 }}
+                        className="flex justify-center"
                       >
                         {item.isScroll ? (
                           <button
                             onClick={() => handleNavClick(item)}
-                            className="w-full text-left px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors font-grotesk"
+                            className="w-[80%] text-center px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors font-grotesk"
                             style={{ color: 'rgba(255, 255, 255, 0.9)' }}
                           >
                             {item.name}
@@ -159,7 +160,7 @@ function AppContent() {
                         ) : (
                           <Link
                             to={item.path}
-                            className="block w-full px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors font-grotesk"
+                            className="w-[80%] text-center px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors font-grotesk"
                             style={{ color: 'rgba(255, 255, 255, 0.9)' }}
                             onClick={() => setIsMenuOpen(false)}
                           >
