@@ -16,6 +16,7 @@ import HackathonDetails from './pages/HackathonDetails';
 import Blogs from './pages/Blogs';
 import BlogPost from './pages/BlogPost';
 import AddBlog from './components/admin/AddBlog';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -113,20 +114,44 @@ function AppContent() {
                 ))}
               </div>
 
-              {/* Mobile Navigation */}
-              <div className="sm:hidden">
-                {isMenuOpen && (
-                  <div className="px-2 py-3 space-y-1">
+              {/* Mobile Menu Button */}
+              <div className="sm:hidden flex items-center">
+                <button
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  className="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
+                >
+                  {isMenuOpen ? (
+                    <FaTimes className="w-5 h-5" />
+                  ) : (
+                    <FaBars className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Navigation Menu */}
+            <AnimatePresence>
+              {isMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="sm:hidden overflow-hidden"
+                >
+                  <div className="py-4 space-y-3">
                     {navItems.map((item) => (
                       <motion.div
                         key={item.name}
-                        whileHover={{ x: 10 }}
-                        whileTap={{ scale: 0.95 }}
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: -20, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
                       >
                         {item.isScroll ? (
                           <button
                             onClick={() => handleNavClick(item)}
-                            className="block w-full text-left px-4 py-2 rounded-xl font-grotesk"
+                            className="w-full text-left px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors font-grotesk"
                             style={{ color: 'rgba(255, 255, 255, 0.9)' }}
                           >
                             {item.name}
@@ -134,7 +159,7 @@ function AppContent() {
                         ) : (
                           <Link
                             to={item.path}
-                            className="block px-4 py-2 rounded-xl font-grotesk"
+                            className="block w-full px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors font-grotesk"
                             style={{ color: 'rgba(255, 255, 255, 0.9)' }}
                             onClick={() => setIsMenuOpen(false)}
                           >
@@ -144,9 +169,9 @@ function AppContent() {
                       </motion.div>
                     ))}
                   </div>
-                )}
-              </div>
-            </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
       </nav>

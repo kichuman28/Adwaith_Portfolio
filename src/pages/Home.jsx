@@ -136,7 +136,7 @@ const Home = () => {
       title: 'Blog',
       icon: <FaBlog className="w-6 h-6" />,
       description: 'Read my latest blog posts',
-      to: '/blog',
+      to: '/blogs',
       gradient: 'from-cyan-400 to-emerald-400'
     }
   ];
@@ -148,15 +148,17 @@ const Home = () => {
       {/* Content Container */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-20 sm:pt-28">
+        <section id="home" className={`min-h-screen flex items-center justify-center px-4 ${isMobile ? 'pt-4' : 'pt-28'}`}>
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
-            className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative"
+            className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${isMobile ? 'py-4' : 'py-20'} relative`}
           >
             {/* Decorative circle */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[600px] h-[300px] sm:h-[400px] md:h-[600px] rounded-full"
+            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
+              isMobile ? 'w-[200px] h-[200px]' : 'w-[400px] h-[400px] md:w-[600px] md:h-[600px]'
+            } rounded-full`}
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(40px)',
@@ -169,7 +171,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-4 sm:mb-8"
+                className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight ${isMobile ? 'mb-2' : 'mb-8'}`}
               >
                 <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 hover:scale-105 transition-transform duration-300 animate-glow" style={{
                   filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
@@ -182,7 +184,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="mt-4 sm:mt-8 max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl leading-relaxed px-4"
+                className={`${isMobile ? 'mt-2' : 'mt-8'} max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl leading-relaxed px-4`}
                 style={{ color: 'rgba(255, 255, 255, 0.9)' }}
               >
                 I love Hackathons, Communities & Lofi Soundtracks! <br className="hidden sm:block" />
@@ -194,7 +196,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="mt-8 sm:mt-16 flex flex-wrap justify-center gap-4 sm:gap-8 px-4"
+                className={`${isMobile ? 'mt-4' : 'mt-16'} flex flex-wrap justify-center gap-4 sm:gap-8 px-4`}
               >
                 {contactLinks.map((link) => (
                   <motion.a
@@ -221,50 +223,12 @@ const Home = () => {
                 ))}
               </motion.div>
 
-              {/* Mobile Navigation Cards - Only show on mobile */}
-              {isMobile && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
-                  className="mt-12 space-y-4 px-4"
-                >
-                  {navigationCards.map((card, index) => (
-                    <Link key={card.title} to={card.to}>
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="relative group rounded-xl p-4 backdrop-blur-sm"
-                        style={{
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
-                        }}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`p-3 rounded-lg bg-gradient-to-r ${card.gradient} text-black`}>
-                            {card.icon}
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors">
-                              {card.title}
-                            </h3>
-                            <p className="text-sm text-white/60">
-                              {card.description}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-
               {/* Resume Button */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-8 sm:mt-16 px-4"
+                className={`${isMobile ? 'mt-4' : 'mt-16'} px-4`}
               >
                 <motion.a
                   whileHover={{ 
@@ -287,12 +251,107 @@ const Home = () => {
                   View Resume
                 </motion.a>
               </motion.div>
+
+              {/* Navigation Cards - Enhanced glowy version */}
+              {isMobile && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="mt-4 px-4"
+                >
+                  <div className="flex justify-center gap-6">
+                    {navigationCards.map((card) => (
+                      <Link 
+                        key={card.title} 
+                        to={card.to}
+                        className="group"
+                      >
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                          className="flex flex-col items-center gap-2"
+                        >
+                          <div
+                            className="transform p-4 rounded-2xl backdrop-blur-sm relative group-hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                            style={{ 
+                              background: 'rgba(255, 255, 255, 0.05)',
+                              border: '1px solid rgba(255, 255, 255, 0.2)',
+                              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                            }}
+                          >
+                            {/* Background gradient */}
+                            <div 
+                              className="absolute inset-0 opacity-50 group-hover:opacity-100 transition-opacity duration-300"
+                              style={{
+                                background: `linear-gradient(135deg, ${card.gradient.split(' ')[1]}, ${card.gradient.split(' ')[3]})`,
+                              }}
+                            />
+
+                            {/* Icon */}
+                            <div className="relative w-6 h-6 text-white group-hover:text-white transition-colors duration-300"
+                                 style={{
+                                   filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
+                                 }}>
+                              {card.icon}
+                            </div>
+
+                            {/* Shine effect */}
+                            <div 
+                              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              style={{
+                                background: 'linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.2) 50%, transparent 60%)',
+                                transform: 'translateX(-100%)',
+                                animation: 'shine 1.5s infinite'
+                              }}
+                            />
+
+                            {/* Glow effect */}
+                            <div 
+                              className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              style={{
+                                background: `linear-gradient(135deg, ${card.gradient.split(' ')[1]}, ${card.gradient.split(' ')[3]})`,
+                                filter: 'blur(15px)',
+                                transform: 'scale(1.2)',
+                                zIndex: -1
+                              }}
+                            />
+                          </div>
+                          <span className="text-xs font-medium text-white/80 group-hover:text-emerald-400 transition-colors">
+                            {card.title}
+                          </span>
+                        </motion.div>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Add this style for the shine animation */}
+              <style>{`
+                @keyframes shine {
+                  0% {
+                    transform: translateX(-100%) rotate(45deg);
+                  }
+                  80%, 100% {
+                    transform: translateX(200%) rotate(45deg);
+                  }
+                }
+                .hide-scrollbar {
+                  -ms-overflow-style: none;
+                  scrollbar-width: none;
+                }
+                .hide-scrollbar::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
             </div>
           </motion.div>
         </section>
 
         {/* About Me Section */}
-        <section id="about" className="min-h-screen py-12 sm:py-20 flex items-center relative">
+        <section id="about" className="min-h-screen py-8 sm:py-20 flex items-center relative">
           <div className="absolute inset-0 overflow-hidden">
             {!isMobile && (
               <>
