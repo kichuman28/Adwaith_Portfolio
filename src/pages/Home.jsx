@@ -148,17 +148,15 @@ const Home = () => {
       {/* Content Container */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section id="home" className={`min-h-screen flex items-center justify-center px-4 ${isMobile ? 'pt-4' : 'pt-28'}`}>
+        <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-20 sm:pt-28">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
-            className={`w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${isMobile ? 'py-4' : 'py-20'} relative`}
+            className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative"
           >
             {/* Decorative circle */}
-            <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${
-              isMobile ? 'w-[200px] h-[200px]' : 'w-[400px] h-[400px] md:w-[600px] md:h-[600px]'
-            } rounded-full`}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[600px] h-[300px] sm:h-[400px] md:h-[600px] rounded-full"
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(40px)',
@@ -171,7 +169,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight ${isMobile ? 'mb-2' : 'mb-8'}`}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-8 sm:mb-12"
               >
                 <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 hover:scale-105 transition-transform duration-300 animate-glow" style={{
                   filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
@@ -184,7 +182,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className={`${isMobile ? 'mt-2' : 'mt-8'} max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl leading-relaxed px-4`}
+                className="mt-4 mb-12 sm:mb-16 max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl leading-relaxed px-4"
                 style={{ color: 'rgba(255, 255, 255, 0.9)' }}
               >
                 I love Hackathons, Communities & Lofi Soundtracks! <br className="hidden sm:block" />
@@ -196,7 +194,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className={`${isMobile ? 'mt-4' : 'mt-16'} flex flex-wrap justify-center gap-4 sm:gap-8 px-4`}
+                className="mb-12 sm:mb-16 flex flex-wrap justify-center gap-4 sm:gap-8 px-4"
               >
                 {contactLinks.map((link) => (
                   <motion.a
@@ -228,7 +226,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className={`${isMobile ? 'mt-4' : 'mt-16'} px-4`}
+                className="mb-12 sm:mb-16 px-4"
               >
                 <motion.a
                   whileHover={{ 
@@ -258,7 +256,7 @@ const Home = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
-                  className="mt-4 px-4"
+                  className="mb-8 px-4"
                 >
                   <div className="flex justify-center gap-6">
                     {navigationCards.map((card) => (
@@ -351,7 +349,7 @@ const Home = () => {
         </section>
 
         {/* About Me Section */}
-        <section id="about" className="min-h-screen py-8 sm:py-20 flex items-center relative">
+        <section id="about" className="min-h-screen py-12 sm:py-20 flex items-center relative">
           <div className="absolute inset-0 overflow-hidden">
             {!isMobile && (
               <>
