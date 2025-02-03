@@ -3,39 +3,39 @@ import { useTheme } from '../context/ThemeContext';
 const TECH_STACK = [
   {
     name: "C++",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
   },
   {
     name: "C",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/c/c-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg"
   },
   {
     name: "Python",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
   },
   {
     name: "JavaScript",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
   },
   {
     name: "Flutter",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/flutter/flutter-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg"
   },
   {
     name: "Android Studio",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/android/android-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg"
   },
   {
     name: "VS Code",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"
   },
   {
     name: "Figma",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/figma/figma-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg"
   },
   {
     name: "Google Colab",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/google/google-original.svg"
+    icon: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Colaboratory_SVG_Logo.svg"
   },
   {
     name: "Postman",
@@ -43,27 +43,27 @@ const TECH_STACK = [
   },
   {
     name: "Java",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg"
   },
   {
     name: "TensorFlow",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/tensorflow/tensorflow-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg"
   },
   {
     name: "React",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
   },
   {
     name: "Firebase",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/firebase/firebase-plain.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg"
   },
   {
     name: "MySQL",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
   },
   {
     name: "Git",
-    icon: "https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg"
+    icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
   }
 ];
 

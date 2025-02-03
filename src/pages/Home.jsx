@@ -152,29 +152,35 @@ const Home = () => {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.5 }}
             className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative"
           >
-            {/* Decorative circle */}
+            {/* Decorative circle - Optimized with transform3d for GPU acceleration */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[600px] h-[300px] sm:h-[400px] md:h-[600px] rounded-full"
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(40px)',
-                animation: 'pulse 8s ease-in-out infinite'
+                animation: 'pulse 10s ease-in-out infinite',
+                willChange: 'transform',
+                transform: 'translate3d(0,0,0)'
               }}
             />
 
             <div className="text-center relative">
+              {/* Optimized motion animations */}
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.4 }}
                 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-8 sm:mb-12"
               >
-                <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 hover:scale-105 transition-transform duration-300 animate-glow" style={{
-                  filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
-                  textShadow: '0 0 15px rgba(52, 211, 153, 0.5)'
-                }}>
+                <span className="inline-block bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 transition-transform duration-200" 
+                      style={{
+                        willChange: 'transform',
+                        transform: 'translate3d(0,0,0)',
+                        filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
+                        textShadow: '0 0 15px rgba(52, 211, 153, 0.5)'
+                      }}>
                   Hi, I'm Adwaith.
                 </span>
               </motion.h1>
@@ -189,11 +195,11 @@ const Home = () => {
                 Not necessarily in that order :)
               </motion.p>
               
-              {/* Contact Links */}
+              {/* Optimized contact links */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+                transition={{ duration: 0.3 }}
                 className="mb-12 sm:mb-16 flex flex-wrap justify-center gap-4 sm:gap-8 px-4"
               >
                 {contactLinks.map((link) => (
@@ -201,7 +207,7 @@ const Home = () => {
                     key={link.name}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -210,7 +216,8 @@ const Home = () => {
                       background: 'rgba(255, 255, 255, 0.1)',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                      willChange: 'transform'
+                      willChange: 'transform',
+                      transform: 'translate3d(0,0,0)'
                     }}
                     aria-label={link.name}
                   >
@@ -250,12 +257,12 @@ const Home = () => {
                 </motion.a>
               </motion.div>
 
-              {/* Navigation Cards - Enhanced glowy version */}
+              {/* Optimized navigation cards */}
               {isMobile && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.5 }}
+                  transition={{ duration: 0.3 }}
                   className="mb-8 px-4"
                 >
                   <div className="flex justify-center gap-6">
@@ -268,8 +275,12 @@ const Home = () => {
                         <motion.div
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                          transition={{ type: "spring", stiffness: 500, damping: 20 }}
                           className="flex flex-col items-center gap-2"
+                          style={{
+                            willChange: 'transform',
+                            transform: 'translate3d(0,0,0)'
+                          }}
                         >
                           <div
                             className="transform p-4 rounded-2xl backdrop-blur-sm relative group-hover:-translate-y-1 transition-all duration-300 overflow-hidden"
@@ -326,15 +337,15 @@ const Home = () => {
                 </motion.div>
               )}
 
-              {/* Add this style for the shine animation */}
+              {/* Optimized keyframes */}
               <style>{`
                 @keyframes shine {
-                  0% {
-                    transform: translateX(-100%) rotate(45deg);
-                  }
-                  80%, 100% {
-                    transform: translateX(200%) rotate(45deg);
-                  }
+                  0% { transform: translate3d(-100%, 0, 0) rotate(45deg); }
+                  80%, 100% { transform: translate3d(200%, 0, 0) rotate(45deg); }
+                }
+                @keyframes pulse {
+                  0%, 100% { transform: translate3d(-50%, -50%, 0) scale(1); }
+                  50% { transform: translate3d(-50%, -50%, 0) scale(1.05); }
                 }
                 .hide-scrollbar {
                   -ms-overflow-style: none;
@@ -357,14 +368,18 @@ const Home = () => {
                   style={{
                     background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                     filter: 'blur(40px)',
-                    animation: 'float 10s ease-in-out infinite'
+                    animation: 'float 15s ease-in-out infinite',
+                    willChange: 'transform',
+                    transform: 'translate3d(0,0,0)'
                   }}
                 />
                 <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full"
                   style={{
                     background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.05) 0%, transparent 70%)',
                     filter: 'blur(40px)',
-                    animation: 'float 12s ease-in-out infinite reverse'
+                    animation: 'float 18s ease-in-out infinite reverse',
+                    willChange: 'transform',
+                    transform: 'translate3d(0,0,0)'
                   }}
                 />
               </>
