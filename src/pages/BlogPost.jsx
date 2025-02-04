@@ -106,24 +106,24 @@ const BlogPost = () => {
           </h1>
 
           {/* Meta Info */}
-          <div className="flex items-center justify-between text-sm text-white/60">
+          <div className="flex items-center justify-between text-white/60">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <FaCalendar className="w-4 h-4" />
                 <span>{new Date(blog.createdAt?.toDate()).toLocaleDateString()}</span>
               </div>
               <div className="flex items-center gap-2">
-                <FaClock className="w-4 h-4" />
-                <span>{blog.readTime}</span>
+                <FaClock />
+                <span>{blog.readTime || '3 min read'}</span>
               </div>
             </div>
             {blog.contentImageUrls?.length > 0 && (
-              <button
+              <button 
                 onClick={() => setShowGallery(true)}
-                className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors"
+                className="flex items-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors duration-300"
               >
                 <FaImage className="w-4 h-4" />
-                <span>{blog.contentImageUrls.length} Images</span>
+                <span>See Gallery</span>
               </button>
             )}
           </div>
