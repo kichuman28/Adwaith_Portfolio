@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaArrowLeft, FaTrophy, FaCalendar, FaUsers, FaCode } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaGithub, FaExternalLinkAlt, FaArrowLeft, FaTrophy, FaCalendar, FaUsers, FaCode, FaTimes } from 'react-icons/fa';
 
 const HackathonDetails = () => {
   const { id } = useParams();
@@ -11,6 +11,7 @@ const HackathonDetails = () => {
   const [hackathon, setHackathon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [mainImage, setMainImage] = useState(null);
   const [showLightbox, setShowLightbox] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,9 @@ const HackathonDetails = () => {
       try {
         const hackathonDoc = await getDoc(doc(db, 'hackathons', id));
         if (hackathonDoc.exists()) {
-          setHackathon({ id: hackathonDoc.id, ...hackathonDoc.data() });
+          const data = { id: hackathonDoc.id, ...hackathonDoc.data() };
+          setHackathon(data);
+          setMainImage(data.imageUrl); // Set initial main image
         } else {
           navigate('/hackathons');
         }
@@ -44,7 +47,19 @@ const HackathonDetails = () => {
     return null;
   }
 
-  const allImages = [hackathon.imageUrl, ...(hackathon.additionalImages || [])];
+  const handleGalleryClick = (image) => {
+    setMainImage(image); // Update main image when clicking gallery image
+  };
+
+  const handleMainImageClick = () => {
+    setSelectedImage(mainImage);
+    setShowLightbox(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null);
+    setShowLightbox(false);
+  };
 
   return (
     <div className="min-h-screen py-24 sm:py-32">
@@ -72,40 +87,43 @@ const HackathonDetails = () => {
           >
             {/* Main Image */}
             <div 
-              className="aspect-video rounded-xl overflow-hidden bg-white/5 backdrop-blur-sm border border-white/10 cursor-pointer relative group"
-              onClick={() => {
-                setSelectedImage(selectedImage || hackathon.imageUrl);
-                setShowLightbox(true);
-              }}
+              className="aspect-video rounded-lg overflow-hidden cursor-pointer group relative"
+              onClick={handleMainImageClick}
             >
               <img
-                src={selectedImage || hackathon.imageUrl}
+                src={mainImage}
                 alt={hackathon.title}
-                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <span className="text-white text-sm">Click to enlarge</span>
+                <span className="text-white text-sm font-medium">Click to enlarge</span>
               </div>
             </div>
 
-            {/* Image Gallery */}
-            {allImages.length > 1 && (
-              <div className="grid grid-cols-4 gap-4">
-                {allImages.map((image, index) => (
-                  <div
+            {/* Gallery Thumbnails */}
+            {(hackathon?.gallery?.length > 0 || hackathon?.additionalImages?.length > 0) && (
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4">
+                {[
+                  hackathon.imageUrl,
+                  ...(hackathon.gallery || []),
+                  ...(hackathon.additionalImages || [])
+                ].map((image, index) => (
+                  <motion.div
                     key={index}
-                    className={`aspect-video rounded-lg overflow-hidden cursor-pointer relative ${
-                      selectedImage === image ? 'ring-2 ring-emerald-400' : ''
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className={`relative cursor-pointer overflow-hidden rounded-lg aspect-video ${
+                      mainImage === image ? 'ring-2 ring-emerald-400' : ''
                     }`}
-                    onClick={() => setSelectedImage(image)}
+                    onClick={() => handleGalleryClick(image)}
                   >
                     <img
                       src={image}
-                      alt={`${hackathon.title} ${index + 1}`}
+                      alt={`Gallery image ${index + 1}`}
                       className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                     />
-                    <div className={`absolute inset-0 bg-black/20 ${selectedImage === image ? 'bg-opacity-0' : ''}`} />
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}
@@ -231,27 +249,38 @@ const HackathonDetails = () => {
         </div>
       </div>
 
-      {/* Image Lightbox */}
-      {showLightbox && (
-        <div 
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setShowLightbox(false)}
-        >
-          <div className="relative max-w-7xl w-full max-h-[90vh]">
-            <img
-              src={selectedImage}
-              alt={hackathon.title}
-              className="w-full h-full object-contain"
-            />
-            <button
-              onClick={() => setShowLightbox(false)}
-              className="absolute top-4 right-4 text-white/80 hover:text-white"
+      {/* Image Modal */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleCloseModal}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.5 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.5 }}
+              className="relative max-w-7xl mx-auto"
+              onClick={(e) => e.stopPropagation()}
             >
-              <span className="text-2xl">×</span>
-            </button>
-          </div>
-        </div>
-      )}
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-2 backdrop-blur-sm transition-all duration-300"
+              >
+                <FaTimes className="w-6 h-6" />
+              </button>
+              <img
+                src={selectedImage}
+                alt="Enlarged view"
+                className="max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain rounded-lg"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
