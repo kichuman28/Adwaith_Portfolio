@@ -178,8 +178,8 @@ const Home = () => {
                       style={{
                         willChange: 'transform',
                         transform: 'translate3d(0,0,0)',
-                        filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
-                        textShadow: '0 0 15px rgba(52, 211, 153, 0.5)'
+                        filter: 'drop-shadow(0 0 6px rgba(52, 211, 153, 0.4))',
+                        textShadow: '0 0 12px rgba(52, 211, 153, 0.4)'
                       }}>
                   Hi, I'm Adwaith.
                 </span>
