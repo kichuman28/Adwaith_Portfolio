@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useProjects } from '../context/ProjectsContext';
 import { useState, useEffect } from 'react';
-import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaGithub, FaExternalLinkAlt, FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const MAX_DESCRIPTION_LENGTH = 200; // Increased to accommodate 4 lines
@@ -99,9 +99,18 @@ const Projects = () => {
 
               {/* Project Content */}
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-white group-hover:text-emerald-400 transition-colors duration-300">
-                  {project.title}
-                </h3>
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors duration-300">
+                    {project.title}
+                  </h3>
+                  <button
+                    onClick={(e) => handleProjectClick(project.id, e)}
+                    className="text-xs px-2 py-1 rounded-full bg-emerald-400/10 text-emerald-400 hover:bg-emerald-400/20 transition-all duration-300 flex items-center gap-1 border border-emerald-400/20"
+                  >
+                    View More
+                    <FaArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
                 <p className="text-white/70 mb-4 font-grotesk h-[6rem] overflow-hidden">
                   {truncateDescription(project.shortDescription || project.description)}
                 </p>
