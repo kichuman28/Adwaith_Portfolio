@@ -11,6 +11,10 @@ const Blogs = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     // First, create a simpler query without composite requirements
     const blogsQuery = query(
       collection(db, 'blogs'),
@@ -61,9 +65,6 @@ const Blogs = () => {
           >
             Blog Posts
           </h2>
-          <p className="text-base sm:text-lg max-w-2xl mx-auto font-grotesk" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-            Sharing insights, experiences, and knowledge about web development and technology
-          </p>
         </motion.div>
 
         {/* Blog Posts Grid */}
