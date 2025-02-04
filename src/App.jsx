@@ -36,9 +36,13 @@ function AppContent() {
       if (location.pathname !== '/') {
         navigate('/#skills');
       } else {
+        // Use the same logic as Home.jsx's initial scroll
+        window.location.hash = '#skills';
         const skillsSection = document.getElementById('skills');
         if (skillsSection) {
-          skillsSection.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => {
+            skillsSection.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
         }
       }
     }
