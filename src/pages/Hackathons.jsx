@@ -103,7 +103,7 @@ const Hackathons = () => {
               }}
             >
               {/* Hackathon Image with Gradient Overlay */}
-              <div className="aspect-[4/3] overflow-hidden relative">
+              <div className="aspect-[16/9] overflow-hidden relative">
                 <img
                   src={hackathon.imageUrl}
                   alt={hackathon.title}
@@ -114,30 +114,30 @@ const Hackathons = () => {
                 
                 {/* Position Badge */}
                 {hackathon.position && (
-                  <div className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-400/20 backdrop-blur-md border border-emerald-400/30">
-                    <FaTrophy className="w-4 h-4 text-emerald-400" />
-                    <span className="text-emerald-400 font-medium">{hackathon.position}</span>
+                  <div className="absolute top-3 right-3 flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-400/20 backdrop-blur-md border border-emerald-400/30">
+                    <FaTrophy className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-emerald-400 font-medium text-sm">{hackathon.position}</span>
                   </div>
                 )}
               </div>
 
               {/* Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-emerald-400 transition-colors duration-300">
+              <div className="p-4">
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors duration-300">
                   {hackathon.title}
                 </h3>
 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {hackathon.technologies.slice(0, 3).map((tech, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
+                      className="px-2 py-0.5 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20"
                     >
                       {tech}
                     </span>
                   ))}
                   {hackathon.technologies.length > 3 && (
-                    <span className="px-3 py-1 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                    <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
                       +{hackathon.technologies.length - 3} more
                     </span>
                   )}
@@ -146,7 +146,7 @@ const Hackathons = () => {
                 {/* View Details Button */}
                 <button
                   onClick={() => handleHackathonClick(hackathon.id)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-all duration-300 group-hover:-translate-y-1"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-all duration-300 group-hover:-translate-y-1"
                 >
                   <span>View Details</span>
                   <FaArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" />
