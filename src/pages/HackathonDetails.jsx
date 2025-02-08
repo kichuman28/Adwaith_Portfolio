@@ -62,7 +62,7 @@ const HackathonDetails = () => {
   };
 
   return (
-    <div className="min-h-screen py-24 sm:py-32">
+    <div className="min-h-screen py-16 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Button */}
         <motion.button
@@ -70,9 +70,9 @@ const HackathonDetails = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           onClick={() => navigate('/hackathons')}
-          className="flex items-center gap-2 text-white/80 hover:text-emerald-400 transition-colors duration-300 mb-8 group"
+          className="mt-4 sm:mt-6 mb-6 sm:mb-8 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 group text-sm sm:text-base"
         >
-          <FaArrowLeft className="transform group-hover:-translate-x-1 transition-transform duration-300" />
+          <FaArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 group-hover:-translate-x-1 transition-transform" />
           <span>Back to Hackathons</span>
         </motion.button>
 

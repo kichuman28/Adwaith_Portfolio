@@ -57,7 +57,7 @@ const ProjectDetails = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
             onClick={() => navigate('/projects')}
-            className="mt-4 sm:mt-6 md:mt-8 mb-6 sm:mb-8 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 group text-sm sm:text-base"
+            className="mt-12 sm:mt-8 mb-6 sm:mb-8 flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 group text-sm sm:text-base"
           >
             <FaArrowLeft className="w-3 h-3 sm:w-4 sm:h-4 group-hover:-translate-x-1 transition-transform" />
             <span>Back to Projects</span>
