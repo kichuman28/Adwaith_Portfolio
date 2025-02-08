@@ -225,7 +225,7 @@ function AppContent() {
               className="text-xs sm:text-sm font-grotesk text-center px-4"
               style={{ color: 'rgba(255, 255, 255, 0.7)' }}
             >
-              Building digital experiences with code and creativity
+              Jack of all trades, master of none, but oftentimes better than a master of one.
             </motion.div>
           </div>
         </div>

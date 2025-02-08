@@ -443,24 +443,66 @@ const Home = () => {
                 >
                   About Me
                 </motion.h2>
-                <motion.div 
-                  initial={{ opacity: 0, x: isMobile ? -10 : -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: isMobile ? 0.4 : 0.8, delay: isMobile ? 0.1 : 0.2 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  className="space-y-4 sm:space-y-6 text-base sm:text-lg font-grotesk"
-                  style={{ color: 'rgba(255, 255, 255, 0.8)' }}
-                >
-                  <p className="leading-relaxed">
-                    Hello! I'm a final year Computer Science student who thrives on new challenges and experiences.
-                    My journey in tech has been marked by constantly seeking out opportunities to learn and grow,
-                    whether through hackathons, side projects, or exploring emerging technologies.
-                  </p>
-                  <p className="leading-relaxed">
-                    I'm an avid hackathon enthusiast, having participated in numerous competitions where I've honed my
-                    ability to rapidly prototype solutions and work effectively in team environments. When I'm not competing
-                    in hackathons, you'll find me sketching in my notebook, playing video games, or studying
-                    Japanese! - always eager to explore new hobbies and creative pursuits.
+                <motion.div className="space-y-6">
+                  {/* Education */}
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1.5">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <p className="text-base sm:text-lg font-grotesk" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                      Final year B.Tech Computer Science student at{' '}
+                      <span className="text-white font-medium">
+                        Sahrdaya College of Engineering and Technology, Thrissur
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Current Role */}
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1.5">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <p className="text-base sm:text-lg font-grotesk" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                      Flutter Developer Intern at{' '}
+                  <a 
+                    href="https://www.caddayn.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                        className="text-emerald-400 hover:text-emerald-300 relative group inline-flex items-center font-medium"
+                  >
+                    Caddayn
+                    <span className="absolute -bottom-px left-0 w-full h-px bg-emerald-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                  </a>
+                      , I just love working with Flutter. Did you know you could make games with it?
+                    </p>
+                  </div>
+
+                  {/* Leadership */}
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1.5">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
+                    </div>
+                    <p className="text-base sm:text-lg font-grotesk" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                      <span className="text-white font-medium">Google Developer Groups On Campus Lead</span>
+                      , trying to be a good leader and make some changes in the community.
+                    </p>
+                  </div>
+
+                  {/* Personal Statement */}
+                  <p className="text-base sm:text-lg font-grotesk pl-5 mt-4 border-l-2 border-emerald-400/30" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)' }}
+                  >
+                    Besides all that, I love participating in hackathons, like REALLY love it. I like to draw, tinker with new stuff and read{' '}
+                    <a 
+                      href="https://www.paulgraham.com/articles.html" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-emerald-400 hover:text-emerald-300 relative group inline-flex items-center font-medium"
+                    >
+                      Paul Graham's essays
+                      <span className="absolute -bottom-px left-0 w-full h-px bg-emerald-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    {' '}now and then!
                   </p>
                 </motion.div>
               </div>
@@ -503,7 +545,7 @@ const Home = () => {
                 Tech Stack
               </h2>
               <p className="text-base sm:text-lg max-w-2xl mx-auto font-grotesk px-4" style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                Technologies and tools I work with to bring ideas to life
+                Here are the tools and technologies I work with!
               </p>
             </motion.div>
 
