@@ -13,7 +13,7 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
     coverImage: null,
     coverImagePreview: null,
     contentImages: [],
-    contentImagePreviews: [],
+    contentImagePreviews: [], // Array of { url: string, tagline: string }
     readTime: '',
     status: 'published' // or 'draft'
   });
@@ -29,49 +29,75 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
         coverImage: null,
         coverImagePreview: editingItem.coverImageUrl || null,
         contentImages: [],
-        contentImagePreviews: editingItem.contentImageUrls || [],
+        contentImagePreviews: (editingItem.contentImageUrls || []).map(img => 
+          typeof img === 'string' ? { url: img, tagline: '' } : img
+        ),
         readTime: editingItem.readTime || '',
         status: editingItem.status || 'published'
       });
     }
   }, [editingItem]);
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value, files } = e.target;
     
     if (name === 'coverImage' && files?.[0]) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      try {
+        setLoading(true);
+        const cloudinaryUrl = await uploadToCloudinary(files[0]);
         setFormData(prev => ({
           ...prev,
-          coverImage: files[0],
-          coverImagePreview: reader.result
+          coverImage: null,
+          coverImagePreview: cloudinaryUrl
         }));
-      };
-      reader.readAsDataURL(files[0]);
+      } catch (error) {
+        console.error('Error uploading cover image:', error);
+        setMessage({ type: 'error', text: 'Error uploading cover image. Please try again.' });
+      } finally {
+        setLoading(false);
+      }
     } else if (name === 'contentImages' && files?.length) {
-      const newImages = Array.from(files);
-      const readers = newImages.map(file => {
-        return new Promise(resolve => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        });
-      });
+      try {
+        setLoading(true);
+        const newImages = Array.from(files);
+        
+        // Upload all images to Cloudinary immediately
+        const uploadedUrls = await Promise.all(
+          newImages.map(file => uploadToCloudinary(file))
+        );
 
-      Promise.all(readers).then(previews => {
+        // Create image objects with empty taglines
+        const imageObjects = uploadedUrls.map(url => ({
+          url,
+          tagline: ''
+        }));
+
         setFormData(prev => ({
           ...prev,
-          contentImages: [...prev.contentImages, ...newImages],
-          contentImagePreviews: [...prev.contentImagePreviews, ...previews]
+          contentImages: [],
+          contentImagePreviews: [...prev.contentImagePreviews, ...imageObjects]
         }));
-      });
+      } catch (error) {
+        console.error('Error uploading content images:', error);
+        setMessage({ type: 'error', text: 'Error uploading content images. Please try again.' });
+      } finally {
+        setLoading(false);
+      }
     } else {
       setFormData(prev => ({
         ...prev,
         [name]: value
       }));
     }
+  };
+
+  const handleTaglineChange = (index, tagline) => {
+    setFormData(prev => ({
+      ...prev,
+      contentImagePreviews: prev.contentImagePreviews.map((img, i) => 
+        i === index ? { ...img, tagline } : img
+      )
+    }));
   };
 
   const handleRemoveImage = () => {
@@ -113,30 +139,16 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
     setMessage({ type: '', text: '' });
 
     try {
-      let coverImageUrl = formData.coverImagePreview;
-      let contentImageUrls = [...formData.contentImagePreviews];
-
-      if (formData.coverImage) {
-        coverImageUrl = await uploadToCloudinary(formData.coverImage);
-      }
-
-      // Upload new content images
-      const newContentImages = await Promise.all(
-        formData.contentImages.map(file => uploadToCloudinary(file))
-      );
-
-      // Replace preview URLs with actual URLs for new images
-      contentImageUrls = contentImageUrls.map(url => 
-        url.startsWith('data:') ? newContentImages.shift() : url
-      );
-
       const blogData = {
         title: formData.title,
         summary: formData.summary,
         content: formData.content,
         tags: formData.tags.split(',').map(tag => tag.trim()),
-        coverImageUrl,
-        contentImageUrls,
+        coverImageUrl: formData.coverImagePreview,
+        contentImageUrls: formData.contentImagePreviews.map(image => ({
+          url: image.url,
+          tagline: image.tagline
+        })),
         readTime: formData.readTime,
         status: formData.status,
         updatedAt: serverTimestamp()
@@ -175,12 +187,14 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
     }
   };
 
-  const insertImagePlaceholder = (imageUrl) => {
+  const insertImagePlaceholder = (image) => {
     const textArea = document.getElementById('content');
     const cursorPosition = textArea.selectionStart;
     const textBefore = formData.content.substring(0, cursorPosition);
     const textAfter = formData.content.substring(cursorPosition);
-    const imageMd = `![Image](${imageUrl})\n\n`;
+    const imageMd = image.tagline 
+      ? `![${image.tagline}](${image.url})\n\n`
+      : `![Image](${image.url})\n\n`;
     
     setFormData(prev => ({
       ...prev,
@@ -240,30 +254,40 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
           Content Images
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-4">
-          {formData.contentImagePreviews.map((preview, index) => (
+          {formData.contentImagePreviews.map((image, index) => (
             <div key={index} className="relative group">
               <img
-                src={preview}
+                src={image.url}
                 alt={`Content ${index + 1}`}
                 className="w-full aspect-video object-cover rounded-lg"
               />
-              <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
-                  type="button"
-                  onClick={() => insertImagePlaceholder(preview)}
-                  className="p-2 rounded-full bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors"
-                  title="Insert into content"
-                >
-                  <FaImage className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveContentImage(index)}
-                  className="p-2 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
-                  title="Remove image"
-                >
-                  <FaTimes className="w-4 h-4" />
-                </button>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                <input
+                  type="text"
+                  value={image.tagline}
+                  onChange={(e) => handleTaglineChange(index, e.target.value)}
+                  className="w-[90%] px-2 py-1 text-sm bg-white/10 border border-white/20 rounded text-white placeholder-white/50 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+                  placeholder="Add image tagline"
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => insertImagePlaceholder(image)}
+                    className="p-2 rounded-full bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors"
+                    title="Insert into content"
+                  >
+                    <FaImage className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveContentImage(index)}
+                    className="p-2 rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors"
+                    title="Remove image"
+                  >
+                    <FaTimes className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

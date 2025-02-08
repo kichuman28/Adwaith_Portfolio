@@ -157,21 +157,26 @@ const BlogPost = () => {
                 );
               },
               img({ src, alt }) {
-                // Check if the image is from the content images
-                const contentImage = blog.contentImageUrls?.find(url => url === src);
-                if (contentImage) {
-                  return (
-                    <div className="my-8">
-                      <img
-                        src={contentImage}
-                        alt={alt}
-                        className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => setSelectedImage(contentImage)}
-                      />
-                    </div>
-                  );
-                }
-                return <img src={src} alt={alt} />;
+                // Find the matching image from contentImageUrls
+                const contentImage = blog.contentImageUrls?.find(img => 
+                  typeof img === 'object' ? img.url === src : img === src
+                );
+                
+                return (
+                  <figure className="my-8">
+                    <img
+                      src={src}
+                      alt={alt}
+                      className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => setSelectedImage(src)}
+                    />
+                    {contentImage?.tagline && (
+                      <figcaption className="mt-2 text-center text-sm text-white/60">
+                        {contentImage.tagline}
+                      </figcaption>
+                    )}
+                  </figure>
+                );
               }
             }}
           >
