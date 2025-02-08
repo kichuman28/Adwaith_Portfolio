@@ -13,6 +13,10 @@ const ProjectDetails = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };

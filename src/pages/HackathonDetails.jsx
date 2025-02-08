@@ -15,6 +15,10 @@ const HackathonDetails = () => {
   const [showLightbox, setShowLightbox] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const fetchHackathon = async () => {
       try {
         const hackathonDoc = await getDoc(doc(db, 'hackathons', id));

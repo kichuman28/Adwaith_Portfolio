@@ -18,6 +18,10 @@ const BlogPost = () => {
   const [showGallery, setShowGallery] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const fetchBlog = async () => {
       try {
         const blogDoc = await getDoc(doc(db, 'blogs', id));
