@@ -160,6 +160,14 @@ const BlogPost = () => {
                   </code>
                 );
               },
+              p({ node, children, ...props }) {
+                // Check if the only child is an img element
+                if (node.children.length === 1 && node.children[0].type === 'element' && node.children[0].tagName === 'img') {
+                  // Return null to prevent wrapping the figure in a paragraph
+                  return <>{children}</>;
+                }
+                return <p {...props}>{children}</p>;
+              },
               img({ src, alt }) {
                 // Find the matching image from contentImageUrls
                 const contentImage = blog.contentImageUrls?.find(img => 
@@ -167,19 +175,21 @@ const BlogPost = () => {
                 );
                 
                 return (
-                  <figure className="my-8">
-                    <img
-                      src={src}
-                      alt={alt}
-                      className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                      onClick={() => setSelectedImage(src)}
-                    />
-                    {contentImage?.tagline && (
-                      <figcaption className="mt-2 text-center text-sm text-white/60">
-                        {contentImage.tagline}
-                      </figcaption>
-                    )}
-                  </figure>
+                  <div className="my-8">
+                    <figure className="m-0">
+                      <img
+                        src={src}
+                        alt={alt}
+                        className="w-full rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => setSelectedImage(src)}
+                      />
+                      {contentImage?.tagline && (
+                        <figcaption className="mt-2 text-center text-sm text-white/60">
+                          {contentImage.tagline}
+                        </figcaption>
+                      )}
+                    </figure>
+                  </div>
                 );
               }
             }}
@@ -210,22 +220,25 @@ const BlogPost = () => {
                   </button>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                  {blog.contentImageUrls?.map((imageUrl, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="relative aspect-video group"
-                    >
-                      <img
-                        src={imageUrl}
-                        alt={`Gallery ${index + 1}`}
-                        className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => setSelectedImage(imageUrl)}
-                      />
-                    </motion.div>
-                  ))}
+                  {blog.contentImageUrls?.map((image, index) => {
+                    const imageUrl = typeof image === 'object' ? image.url : image;
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="relative aspect-video group"
+                      >
+                        <img
+                          src={imageUrl}
+                          alt={`Gallery ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => setSelectedImage(imageUrl)}
+                        />
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
