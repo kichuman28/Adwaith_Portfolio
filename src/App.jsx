@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from "@vercel/analytics/react"
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Home from './pages/Home';
@@ -244,6 +245,7 @@ function App() {
         <Router>
           <ScrollToTop />
           <AppContent />
+          <Analytics />
         </Router>
       </ProjectsProvider>
     </ThemeProvider>
