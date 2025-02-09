@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from "@vercel/analytics/react"
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
@@ -246,6 +247,7 @@ function App() {
           <ScrollToTop />
           <AppContent />
           <Analytics />
+          <SpeedInsights />
         </Router>
       </ProjectsProvider>
     </ThemeProvider>
