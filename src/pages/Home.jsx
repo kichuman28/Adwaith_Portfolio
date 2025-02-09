@@ -148,9 +148,9 @@ const Home = () => {
 
   return (
     <main className="relative">
-      <AnimatedBackground />
-      
-      {/* Content Container */}
+      {/* Only render background animations for non-mobile */}
+      {!isMobile && <AnimatedBackground />}
+
       <div className="relative z-10">
         {/* Hero Section */}
         <section id="home" className="min-h-screen flex items-center justify-center px-4 pt-20 sm:pt-28">
@@ -160,7 +160,7 @@ const Home = () => {
             transition={{ duration: 0.5 }}
             className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative"
           >
-            {/* Decorative circle - Optimized with transform3d for GPU acceleration */}
+            {/* Decorative Circle */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[400px] md:w-[600px] h-[300px] sm:h-[400px] md:h-[600px] rounded-full"
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
@@ -170,9 +170,7 @@ const Home = () => {
                 transform: 'translate3d(0,0,0)'
               }}
             />
-
             <div className="text-center relative">
-              {/* Optimized motion animations */}
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -199,8 +197,8 @@ const Home = () => {
                 I love Hackathons, Communities & Lofi Soundtracks! <br className="hidden sm:block" />
                 Not necessarily in that order :)
               </motion.p>
-              
-              {/* Optimized contact links */}
+
+              {/* Contact Links */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -212,7 +210,7 @@ const Home = () => {
                     key={link.name}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 20 }}
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -246,7 +244,7 @@ const Home = () => {
                     boxShadow: '0 0 30px rgba(52,211,153,0.8), 0 0 60px rgba(52,211,153,0.6), 0 0 90px rgba(52,211,153,0.4)'
                   }}
                   whileTap={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 15 }}
                   href="https://drive.google.com/file/d/1hmv5CJX0YTA-2SFh01eJFPuLBERYAJy3/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -262,7 +260,7 @@ const Home = () => {
                 </motion.a>
               </motion.div>
 
-              {/* Optimized navigation cards */}
+              {/* Navigation Cards (Mobile Only) */}
               {isMobile && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -280,7 +278,7 @@ const Home = () => {
                         <motion.div
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                          transition={{ type: 'spring', stiffness: 500, damping: 20 }}
                           className="flex flex-col items-center gap-2"
                           style={{
                             willChange: 'transform',
@@ -292,26 +290,19 @@ const Home = () => {
                             style={{ 
                               background: 'rgba(255, 255, 255, 0.05)',
                               border: '1px solid rgba(255, 255, 255, 0.2)',
-                              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+                              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)'
                             }}
                           >
-                            {/* Background gradient */}
                             <div 
                               className="absolute inset-0 opacity-50 group-hover:opacity-100 transition-opacity duration-300"
                               style={{
-                                background: `linear-gradient(135deg, ${card.gradient.split(' ')[1]}, ${card.gradient.split(' ')[3]})`,
+                                background: `linear-gradient(135deg, ${card.gradient.split(' ')[1]}, ${card.gradient.split(' ')[3]})`
                               }}
                             />
-
-                            {/* Icon */}
                             <div className="relative w-6 h-6 text-white group-hover:text-white transition-colors duration-300"
-                                 style={{
-                                   filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))',
-                                 }}>
+                                 style={{ filter: 'drop-shadow(0 0 8px rgba(52, 211, 153, 0.5))' }}>
                               {card.icon}
                             </div>
-
-                            {/* Shine effect */}
                             <div 
                               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                               style={{
@@ -320,8 +311,6 @@ const Home = () => {
                                 animation: 'shine 1.5s infinite'
                               }}
                             />
-
-                            {/* Glow effect */}
                             <div 
                               className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                               style={{
@@ -341,7 +330,6 @@ const Home = () => {
                   </div>
                 </motion.div>
               )}
-
             </div>
           </motion.div>
         </section>
@@ -515,7 +503,6 @@ const Home = () => {
               }}
             />
           </div>
-
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -525,9 +512,7 @@ const Home = () => {
               className="text-center mb-12 sm:mb-16 relative"
             >
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-emerald-400 relative"
-                style={{
-                  textShadow: '0 0 20px rgba(52, 211, 153, 0.5), 0 0 40px rgba(52, 211, 153, 0.3)'
-                }}
+                style={{ textShadow: '0 0 20px rgba(52, 211, 153, 0.5), 0 0 40px rgba(52, 211, 153, 0.3)' }}
               >
                 Tech Stack
               </h2>
@@ -536,7 +521,6 @@ const Home = () => {
               </p>
             </motion.div>
 
-            {/* Tech Grid - Modified to show immediately */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
               {TECH_STACK.map((tech, index) => {
                 const glowColor = getGlowColor(tech.name);
@@ -565,7 +549,6 @@ const Home = () => {
                       boxShadow: `0 0 20px ${glowColor.replace('0.5', '0.15')}`,
                     }}
                   >
-                    {/* Glow effect overlay */}
                     <div 
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-200"
                       style={{
@@ -574,7 +557,6 @@ const Home = () => {
                         transform: 'scale(1.1)',
                       }}
                     />
-
                     <div className="relative flex flex-col items-center gap-3">
                       <img
                         src={tech.icon}
