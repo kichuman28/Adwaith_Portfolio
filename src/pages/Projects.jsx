@@ -77,9 +77,8 @@ const Projects = () => {
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: isMobile ? index * 0.1 : index * 0.2 }}
-              viewport={{ once: true, margin: "-50px" }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group relative bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden cursor-pointer"
               style={{
                 boxShadow: '0 0 20px rgba(52, 211, 153, 0.1)',
