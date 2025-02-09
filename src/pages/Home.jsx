@@ -2,7 +2,7 @@ import { useTheme } from '../context/ThemeContext';
 import Skills from '../components/Skills';
 import { motion } from 'framer-motion';
 import AnimatedBackground from '../components/AnimatedBackground';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { FaGithub, FaLinkedin, FaCode, FaProjectDiagram, FaTrophy, FaBlog } from 'react-icons/fa';
 import { MdEmail, MdPhone } from 'react-icons/md';
 import { HiDocumentDownload } from 'react-icons/hi';
@@ -59,87 +59,92 @@ const TECH_STACK = [
   }
 ];
 
+const navigationCards = [
+  {
+    title: 'Projects',
+    icon: <FaProjectDiagram className="w-6 h-6" />,
+    description: 'Check out my portfolio of projects',
+    to: '/projects',
+    gradient: 'from-emerald-400 to-teal-400'
+  },
+  {
+    title: 'Hackathons',
+    icon: <FaTrophy className="w-6 h-6" />,
+    description: 'View my hackathon experiences',
+    to: '/hackathons',
+    gradient: 'from-teal-400 to-cyan-400'
+  },
+  {
+    title: 'Blog',
+    icon: <FaBlog className="w-6 h-6" />,
+    description: 'Read my latest blog posts',
+    to: '/blogs',
+    gradient: 'from-cyan-400 to-emerald-400'
+  }
+];
+
+// Debounce helper to reduce resize event overhead
+function debounce(func, delay) {
+  let timeoutId;
+  return (...args) => {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+
 const Home = () => {
   const { theme } = useTheme();
   const [isMobile, setIsMobile] = useState(false);
 
+  // Debounced function to check mobile size
+  const checkMobile = useCallback(debounce(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, 100), []);
+
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [checkMobile]);
 
+  // Smooth scrolling to hash on initial load
   useEffect(() => {
-    // Check if there's a hash in the URL
     if (window.location.hash) {
-      // Remove the '#' and get the section ID
       const sectionId = window.location.hash.slice(1);
-      // Find the element
       const element = document.getElementById(sectionId);
-      // If element exists, scroll to it
       if (element) {
-        // Add a small delay to ensure the page is fully loaded
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        setTimeout(() => element.scrollIntoView({ behavior: 'smooth' }), 100);
       }
     }
-  }, []); // Run only once when component mounts
+  }, []);
 
   const contactLinks = [
-    {
-      name: 'GitHub',
-      href: 'https://github.com/kichuman28',
-      icon: <FaGithub className="w-6 h-6" />
-    },
-    {
-      name: 'LinkedIn',
-      href: 'https://www.linkedin.com/in/adwaith-jayasankar-156539200/',
-      icon: <FaLinkedin className="w-6 h-6" />
-    },
-    {
-      name: 'LeetCode',
-      href: 'https://leetcode.com/u/kichu31084/',
-      icon: <FaCode className="w-6 h-6" />
-    },
-    {
-      name: 'Email',
-      href: 'mailto:adwaithjk28@gmail.com',
-      icon: <MdEmail className="w-6 h-6" />
-    },
-    {
-      name: 'Phone',
-      href: 'tel:+919645750263',
-      icon: <MdPhone className="w-6 h-6" />
-    }
+    { name: 'GitHub', href: 'https://github.com/kichuman28', icon: <FaGithub className="w-6 h-6" /> },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/adwaith-jayasankar-156539200/', icon: <FaLinkedin className="w-6 h-6" /> },
+    { name: 'LeetCode', href: 'https://leetcode.com/u/kichu31084/', icon: <FaCode className="w-6 h-6" /> },
+    { name: 'Email', href: 'mailto:adwaithjk28@gmail.com', icon: <MdEmail className="w-6 h-6" /> },
+    { name: 'Phone', href: 'tel:+919645750263', icon: <MdPhone className="w-6 h-6" /> }
   ];
 
-  const navigationCards = [
-    {
-      title: 'Projects',
-      icon: <FaProjectDiagram className="w-6 h-6" />,
-      description: 'Check out my portfolio of projects',
-      to: '/projects',
-      gradient: 'from-emerald-400 to-teal-400'
-    },
-    {
-      title: 'Hackathons',
-      icon: <FaTrophy className="w-6 h-6" />,
-      description: 'View my hackathon experiences',
-      to: '/hackathons',
-      gradient: 'from-teal-400 to-cyan-400'
-    },
-    {
-      title: 'Blog',
-      icon: <FaBlog className="w-6 h-6" />,
-      description: 'Read my latest blog posts',
-      to: '/blogs',
-      gradient: 'from-cyan-400 to-emerald-400'
-    }
-  ];
+  const getGlowColor = (name) => {
+    const colors = {
+      'C++': 'rgba(0, 89, 156, 0.5)',
+      'Python': 'rgba(255, 212, 59, 0.5)',
+      'JavaScript': 'rgba(247, 223, 30, 0.5)',
+      'Flutter': 'rgba(69, 208, 255, 0.5)',
+      'Android Studio': 'rgba(82, 180, 72, 0.5)',
+      'VS Code': 'rgba(0, 122, 204, 0.5)',
+      'Figma': 'rgba(242, 78, 30, 0.5)',
+      'React': 'rgba(97, 218, 251, 0.5)',
+      'Firebase': 'rgba(255, 202, 40, 0.5)',
+      'Git': 'rgba(240, 80, 50, 0.5)',
+      'TensorFlow': 'rgba(255, 138, 101, 0.5)',
+      'Java': 'rgba(231, 111, 0, 0.5)'
+    };
+    return colors[name] || 'rgba(52, 211, 153, 0.5)';
+  };
 
   return (
     <main className="relative">
@@ -160,7 +165,7 @@ const Home = () => {
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(40px)',
-                animation: 'pulse 10s ease-in-out infinite',
+                animation: isMobile ? 'none' : 'pulse 10s ease-in-out infinite',
                 willChange: 'transform',
                 transform: 'translate3d(0,0,0)'
               }}
@@ -337,24 +342,6 @@ const Home = () => {
                 </motion.div>
               )}
 
-              {/* Optimized keyframes */}
-              <style>{`
-                @keyframes shine {
-                  0% { transform: translate3d(-100%, 0, 0) rotate(45deg); }
-                  80%, 100% { transform: translate3d(200%, 0, 0) rotate(45deg); }
-                }
-                @keyframes pulse {
-                  0%, 100% { transform: translate3d(-50%, -50%, 0) scale(1); }
-                  50% { transform: translate3d(-50%, -50%, 0) scale(1.05); }
-                }
-                .hide-scrollbar {
-                  -ms-overflow-style: none;
-                  scrollbar-width: none;
-                }
-                .hide-scrollbar::-webkit-scrollbar {
-                  display: none;
-                }
-              `}</style>
             </div>
           </motion.div>
         </section>
@@ -517,14 +504,14 @@ const Home = () => {
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.1) 0%, transparent 70%)',
                 filter: 'blur(40px)',
-                animation: 'float 8s ease-in-out infinite'
+                animation: isMobile ? 'none' : 'float 8s ease-in-out infinite'
               }}
             />
             <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px]"
               style={{
                 background: 'radial-gradient(circle at center, rgba(52, 211, 153, 0.05) 0%, transparent 70%)',
                 filter: 'blur(40px)',
-                animation: 'float 10s ease-in-out infinite reverse'
+                animation: isMobile ? 'none' : 'float 10s ease-in-out infinite reverse'
               }}
             />
           </div>
@@ -549,42 +536,21 @@ const Home = () => {
               </p>
             </motion.div>
 
-            {/* Tech Grid - With glow effects */}
+            {/* Tech Grid - Modified to show immediately */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
               {TECH_STACK.map((tech, index) => {
-                // Define color based on technology
-                const getGlowColor = (name) => {
-                  const colors = {
-                    'C++': 'rgba(0, 89, 156, 0.5)',
-                    'Python': 'rgba(255, 212, 59, 0.5)',
-                    'JavaScript': 'rgba(247, 223, 30, 0.5)',
-                    'Flutter': 'rgba(69, 208, 255, 0.5)',
-                    'Android Studio': 'rgba(82, 180, 72, 0.5)',
-                    'VS Code': 'rgba(0, 122, 204, 0.5)',
-                    'Figma': 'rgba(242, 78, 30, 0.5)',
-                    'React': 'rgba(97, 218, 251, 0.5)',
-                    'Firebase': 'rgba(255, 202, 40, 0.5)',
-                    'Git': 'rgba(240, 80, 50, 0.5)',
-                    'TensorFlow': 'rgba(255, 138, 101, 0.5)',
-                    'Java': 'rgba(231, 111, 0, 0.5)'
-                  };
-                  return colors[name] || 'rgba(52, 211, 153, 0.5)';
-                };
-
                 const glowColor = getGlowColor(tech.name);
-
                 return (
                   <motion.div
                     key={tech.name}
                     initial={{ opacity: 0 }}
-                    whileInView={{ 
+                    animate={{ 
                       opacity: 1,
                       transition: {
                         duration: 0.2,
                         delay: isMobile ? index * 0.05 : index * 0.08
                       }
                     }}
-                    viewport={{ once: true, margin: "-50px" }}
                     className={`
                       relative p-4 rounded-xl 
                       bg-white/5 backdrop-blur-sm
