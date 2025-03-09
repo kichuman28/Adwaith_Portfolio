@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmation from './DeleteConfirmation';
 
-const HackathonList = ({ hackathons, onEdit, setMessage }) => {
+const HackathonList = ({ hackathons, onEdit, setMessage, refreshHackathons }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [hackathonToDelete, setHackathonToDelete] = useState(null);
+  const [isReordering, setIsReordering] = useState(false);
   const navigate = useNavigate();
+
+  // Sort hackathons by displayOrder
+  const sortedHackathons = [...hackathons].sort((a, b) => 
+    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
+  );
 
   const handleDelete = async () => {
     if (!hackathonToDelete) return;
@@ -16,6 +22,7 @@ const HackathonList = ({ hackathons, onEdit, setMessage }) => {
     try {
       await deleteDoc(doc(db, 'hackathons', hackathonToDelete.id));
       setMessage({ type: 'success', text: 'Hackathon deleted successfully!' });
+      if (refreshHackathons) refreshHackathons();
     } catch (error) {
       console.error('Error deleting hackathon:', error);
       setMessage({ type: 'error', text: 'Error deleting hackathon. Please try again.' });
@@ -30,9 +37,45 @@ const HackathonList = ({ hackathons, onEdit, setMessage }) => {
     setShowDeleteConfirm(true);
   };
 
+  const moveHackathon = async (hackathon, direction) => {
+    setIsReordering(true);
+    try {
+      const currentIndex = sortedHackathons.findIndex(h => h.id === hackathon.id);
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      
+      // Check if move is possible
+      if (targetIndex < 0 || targetIndex >= sortedHackathons.length) {
+        setIsReordering(false);
+        return;
+      }
+      
+      const targetHackathon = sortedHackathons[targetIndex];
+      
+      // Swap display orders
+      const currentOrder = hackathon.displayOrder || Number.MAX_SAFE_INTEGER;
+      const targetOrder = targetHackathon.displayOrder || Number.MAX_SAFE_INTEGER;
+      
+      // Update both hackathons
+      await updateDoc(doc(db, 'hackathons', hackathon.id), {
+        displayOrder: targetOrder
+      });
+      
+      await updateDoc(doc(db, 'hackathons', targetHackathon.id), {
+        displayOrder: currentOrder
+      });
+      
+      setMessage({ type: 'success', text: 'Hackathon order updated!' });
+      if (refreshHackathons) refreshHackathons();
+    } catch (error) {
+      console.error('Error reordering hackathons:', error);
+      setMessage({ type: 'error', text: 'Error updating hackathon order. Please try again.' });
+    }
+    setIsReordering(false);
+  };
+
   return (
     <div className="space-y-4">
-      {hackathons.map((hackathon) => (
+      {sortedHackathons.map((hackathon, index) => (
         <div
           key={hackathon.id}
           className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6"
@@ -49,6 +92,32 @@ const HackathonList = ({ hackathons, onEdit, setMessage }) => {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              {/* Order Controls */}
+              <div className="flex items-center gap-2 mr-2">
+                <button
+                  onClick={() => moveHackathon(hackathon, 'up')}
+                  disabled={index === 0 || isReordering}
+                  className={`p-2 rounded-lg transition-colors duration-200 
+                    ${index === 0 || isReordering 
+                      ? 'bg-white/5 text-white/30 cursor-not-allowed' 
+                      : 'bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30'}`}
+                  title="Move Up"
+                >
+                  <FaArrowUp className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => moveHackathon(hackathon, 'down')}
+                  disabled={index === sortedHackathons.length - 1 || isReordering}
+                  className={`p-2 rounded-lg transition-colors duration-200 
+                    ${index === sortedHackathons.length - 1 || isReordering 
+                      ? 'bg-white/5 text-white/30 cursor-not-allowed' 
+                      : 'bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30'}`}
+                  title="Move Down"
+                >
+                  <FaArrowDown className="w-4 h-4" />
+                </button>
+              </div>
+              
               <button
                 onClick={() => navigate(`/hackathons/${hackathon.id}`)}
                 className="p-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-200"
