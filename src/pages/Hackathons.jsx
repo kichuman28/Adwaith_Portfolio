@@ -31,7 +31,7 @@ const Hackathons = () => {
   useEffect(() => {
     const hackathonsQuery = query(
       collection(db, 'hackathons'),
-      orderBy('date', 'desc')
+      orderBy('displayOrder', 'asc')
     );
 
     const unsubscribe = onSnapshot(hackathonsQuery, 
@@ -70,6 +70,11 @@ const Hackathons = () => {
     );
   }
 
+  // Sort hackathons by displayOrder
+  const sortedHackathons = [...hackathons].sort((a, b) => 
+    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
+  );
+
   return (
     <div className="min-h-screen py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,7 +94,7 @@ const Hackathons = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {hackathons.map((hackathon, index) => (
+          {sortedHackathons.map((hackathon, index) => (
             <motion.div
               key={hackathon.id}
               initial={{ opacity: 0, y: 20 }}
