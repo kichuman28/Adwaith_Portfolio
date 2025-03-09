@@ -49,6 +49,11 @@ const Blogs = () => {
     );
   }
 
+  // Sort blogs by displayOrder
+  const sortedBlogs = [...blogs].sort((a, b) => 
+    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
+  );
+
   return (
     <div className="min-h-screen py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,7 +74,7 @@ const Blogs = () => {
 
         {/* Blog Posts Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {blogs.map((blog, index) => (
+          {sortedBlogs.map((blog, index) => (
             <motion.article
               key={blog.id}
               initial={{ opacity: 0, y: 20 }}
