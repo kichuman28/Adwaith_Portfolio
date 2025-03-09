@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import axios from 'axios';
 import { FaTimes, FaImage } from 'react-icons/fa';
@@ -158,8 +158,23 @@ const AddBlog = ({ setMessage, editingItem, onCancel }) => {
         await updateDoc(doc(db, 'blogs', editingItem.id), blogData);
         setMessage({ type: 'success', text: 'Blog post updated successfully!' });
       } else {
+        // Get the highest current display order
+        let displayOrder = 0;
+        try {
+          const blogsSnapshot = await getDocs(collection(db, 'blogs'));
+          if (!blogsSnapshot.empty) {
+            const maxOrder = Math.max(...blogsSnapshot.docs
+              .map(doc => doc.data().displayOrder || 0)
+              .filter(order => !isNaN(order)));
+            displayOrder = maxOrder + 1;
+          }
+        } catch (err) {
+          console.error("Error getting max display order:", err);
+        }
+        
         await addDoc(collection(db, 'blogs'), {
           ...blogData,
+          displayOrder,
           createdAt: serverTimestamp()
         });
         setMessage({ type: 'success', text: 'Blog post added successfully!' });
