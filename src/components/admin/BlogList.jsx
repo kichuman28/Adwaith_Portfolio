@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmation from './DeleteConfirmation';
 
-const BlogList = ({ blogs, onEdit, setMessage }) => {
+const BlogList = ({ blogs, onEdit, setMessage, refreshBlogs }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState(null);
+  const [isReordering, setIsReordering] = useState(false);
   const navigate = useNavigate();
+
+  // Sort blogs by displayOrder
+  const sortedBlogs = [...blogs].sort((a, b) => 
+    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
+  );
 
   const handleDelete = async () => {
     if (!blogToDelete) return;
@@ -16,6 +22,7 @@ const BlogList = ({ blogs, onEdit, setMessage }) => {
     try {
       await deleteDoc(doc(db, 'blogs', blogToDelete.id));
       setMessage({ type: 'success', text: 'Blog post deleted successfully!' });
+      if (refreshBlogs) refreshBlogs();
     } catch (error) {
       console.error('Error deleting blog:', error);
       setMessage({ type: 'error', text: 'Error deleting blog post. Please try again.' });
@@ -30,9 +37,45 @@ const BlogList = ({ blogs, onEdit, setMessage }) => {
     setShowDeleteConfirm(true);
   };
 
+  const moveBlog = async (blog, direction) => {
+    setIsReordering(true);
+    try {
+      const currentIndex = sortedBlogs.findIndex(b => b.id === blog.id);
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      
+      // Check if move is possible
+      if (targetIndex < 0 || targetIndex >= sortedBlogs.length) {
+        setIsReordering(false);
+        return;
+      }
+      
+      const targetBlog = sortedBlogs[targetIndex];
+      
+      // Swap display orders
+      const currentOrder = blog.displayOrder || Number.MAX_SAFE_INTEGER;
+      const targetOrder = targetBlog.displayOrder || Number.MAX_SAFE_INTEGER;
+      
+      // Update both blogs
+      await updateDoc(doc(db, 'blogs', blog.id), {
+        displayOrder: targetOrder
+      });
+      
+      await updateDoc(doc(db, 'blogs', targetBlog.id), {
+        displayOrder: currentOrder
+      });
+      
+      setMessage({ type: 'success', text: 'Blog order updated!' });
+      if (refreshBlogs) refreshBlogs();
+    } catch (error) {
+      console.error('Error reordering blogs:', error);
+      setMessage({ type: 'error', text: 'Error updating blog order. Please try again.' });
+    }
+    setIsReordering(false);
+  };
+
   return (
     <div className="space-y-4">
-      {blogs.map((blog) => (
+      {sortedBlogs.map((blog, index) => (
         <div
           key={blog.id}
           className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6"
@@ -70,6 +113,32 @@ const BlogList = ({ blogs, onEdit, setMessage }) => {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {/* Order Controls */}
+              <div className="flex items-center gap-2 mr-2">
+                <button
+                  onClick={() => moveBlog(blog, 'up')}
+                  disabled={index === 0 || isReordering}
+                  className={`p-2 rounded-lg transition-colors duration-200 
+                    ${index === 0 || isReordering 
+                      ? 'bg-white/5 text-white/30 cursor-not-allowed' 
+                      : 'bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30'}`}
+                  title="Move Up"
+                >
+                  <FaArrowUp className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => moveBlog(blog, 'down')}
+                  disabled={index === sortedBlogs.length - 1 || isReordering}
+                  className={`p-2 rounded-lg transition-colors duration-200 
+                    ${index === sortedBlogs.length - 1 || isReordering 
+                      ? 'bg-white/5 text-white/30 cursor-not-allowed' 
+                      : 'bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30'}`}
+                  title="Move Down"
+                >
+                  <FaArrowDown className="w-4 h-4" />
+                </button>
+              </div>
+              
               <button
                 onClick={() => navigate(`/blogs/${blog.id}`)}
                 className="p-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-200"
