@@ -4,6 +4,33 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaArrowLeft, FaTimes } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 
+// Helper function to convert video URLs to embed format
+const getEmbedUrl = (url) => {
+  // Handle Vimeo URLs
+  if (url.includes('vimeo.com')) {
+    // Convert https://vimeo.com/123456789 to https://player.vimeo.com/video/123456789
+    const vimeoId = url.split('/').pop();
+    return `https://player.vimeo.com/video/${vimeoId}`;
+  }
+  
+  // Handle YouTube URLs (if needed)
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    // Handle youtube.com/watch?v=VIDEO_ID
+    if (url.includes('watch?v=')) {
+      const videoId = new URL(url).searchParams.get('v');
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    // Handle youtu.be/VIDEO_ID
+    if (url.includes('youtu.be')) {
+      const videoId = url.split('/').pop();
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+  }
+  
+  // Return original URL if not recognized
+  return url;
+};
+
 const ProjectDetails = () => {
   const { projectId } = useParams();
   const { projects, loading } = useProjects();
@@ -129,7 +156,7 @@ const ProjectDetails = () => {
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4">Demo Video</h2>
                   <div className="aspect-video rounded-lg overflow-hidden bg-black/20">
                     <iframe
-                      src={project.videoUrl}
+                      src={getEmbedUrl(project.videoUrl)}
                       title={`${project.title} demo`}
                       className="w-full h-full"
                       allowFullScreen
