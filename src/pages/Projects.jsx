@@ -54,6 +54,11 @@ const Projects = () => {
     return description.slice(0, MAX_DESCRIPTION_LENGTH).trim() + '...';
   };
 
+  // Sort projects by displayOrder
+  const sortedProjects = [...projects].sort((a, b) => 
+    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
+  );
+
   return (
     <div className="min-h-screen py-24 sm:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,7 +78,7 @@ const Projects = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {projects.map((project, index) => (
+          {sortedProjects.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 20 }}

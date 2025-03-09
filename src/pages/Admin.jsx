@@ -9,6 +9,7 @@ import BlogList from '../components/admin/BlogList';
 import AddProject from '../components/admin/AddProject';
 import AddHackathon from '../components/admin/AddHackathon';
 import AddBlog from '../components/admin/AddBlog';
+import DisplayOrderInitializer from '../components/admin/DisplayOrderInitializer';
 import Toast from '../components/Toast';
 import { signOut } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -85,6 +86,17 @@ const Admin = () => {
     setEditingItem(null);
   };
 
+  const refreshProjects = () => {
+    const projectsQuery = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
+    onSnapshot(projectsQuery, (snapshot) => {
+      const projectsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setProjects(projectsData);
+    });
+  };
+
   const renderContent = () => {
     if (showAddForm) {
       switch (activeTab) {
@@ -136,7 +148,18 @@ const Admin = () => {
           </div>
         );
       case 'projects':
-        return <ProjectList projects={projects} onEdit={handleEdit} setMessage={setMessage} />;
+        return (
+          <>
+            <DisplayOrderInitializer refreshProjects={refreshProjects} />
+            
+            <ProjectList 
+              projects={projects} 
+              onEdit={handleEdit} 
+              setMessage={setMessage}
+              refreshProjects={refreshProjects}
+            />
+          </>
+        );
       case 'hackathons':
         return <HackathonList hackathons={hackathons} onEdit={handleEdit} setMessage={setMessage} />;
       case 'blogs':
