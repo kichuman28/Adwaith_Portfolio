@@ -192,7 +192,10 @@ const Home = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="mt-4 mb-12 sm:mb-16 max-w-2xl mx-auto text-lg sm:text-xl md:text-2xl leading-relaxed px-4"
-                style={{ color: 'rgba(255, 255, 255, 0.9)' }}
+                style={{ 
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontFamily: '"Quicksand", sans-serif'
+                }}
               >
                 I love Hackathons, Communities & Lofi Soundtracks! <br className="hidden sm:block" />
                 Not necessarily in that order :)
