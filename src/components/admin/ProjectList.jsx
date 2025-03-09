@@ -11,10 +11,25 @@ const ProjectList = ({ projects, onEdit, setMessage, refreshProjects }) => {
   const [isReordering, setIsReordering] = useState(false);
   const navigate = useNavigate();
 
-  // Sort projects by displayOrder
-  const sortedProjects = [...projects].sort((a, b) => 
-    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
-  );
+  // Sort projects by displayOrder, with new items (without displayOrder) at the end
+  const sortedProjects = [...projects].sort((a, b) => {
+    // If both have displayOrder, compare them
+    if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+      return a.displayOrder - b.displayOrder;
+    }
+    // If only a has displayOrder, a comes first
+    if (a.displayOrder !== undefined) {
+      return -1;
+    }
+    // If only b has displayOrder, b comes first
+    if (b.displayOrder !== undefined) {
+      return 1;
+    }
+    // If neither has displayOrder, sort by creation date (newest first)
+    const aDate = a.createdAt?.toDate() || new Date(0);
+    const bDate = b.createdAt?.toDate() || new Date(0);
+    return bDate - aDate;
+  });
 
   const handleDelete = async () => {
     if (!projectToDelete) return;
