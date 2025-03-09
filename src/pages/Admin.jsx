@@ -97,6 +97,28 @@ const Admin = () => {
     });
   };
 
+  const refreshHackathons = () => {
+    const hackathonsQuery = query(collection(db, 'hackathons'), orderBy('createdAt', 'desc'));
+    onSnapshot(hackathonsQuery, (snapshot) => {
+      const hackathonsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setHackathons(hackathonsData);
+    });
+  };
+
+  const refreshBlogs = () => {
+    const blogsQuery = query(collection(db, 'blogs'), orderBy('createdAt', 'desc'));
+    onSnapshot(blogsQuery, (snapshot) => {
+      const blogsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setBlogs(blogsData);
+    });
+  };
+
   const renderContent = () => {
     if (showAddForm) {
       switch (activeTab) {
@@ -150,7 +172,10 @@ const Admin = () => {
       case 'projects':
         return (
           <>
-            <DisplayOrderInitializer refreshProjects={refreshProjects} />
+            <DisplayOrderInitializer 
+              refreshProjects={refreshProjects} 
+              contentType="projects" 
+            />
             
             <ProjectList 
               projects={projects} 
@@ -161,9 +186,37 @@ const Admin = () => {
           </>
         );
       case 'hackathons':
-        return <HackathonList hackathons={hackathons} onEdit={handleEdit} setMessage={setMessage} />;
+        return (
+          <>
+            <DisplayOrderInitializer 
+              refreshHackathons={refreshHackathons} 
+              contentType="hackathons" 
+            />
+            
+            <HackathonList 
+              hackathons={hackathons} 
+              onEdit={handleEdit} 
+              setMessage={setMessage} 
+              refreshHackathons={refreshHackathons} 
+            />
+          </>
+        );
       case 'blogs':
-        return <BlogList blogs={blogs} onEdit={handleEdit} setMessage={setMessage} />;
+        return (
+          <>
+            <DisplayOrderInitializer 
+              refreshBlogs={refreshBlogs} 
+              contentType="blogs" 
+            />
+            
+            <BlogList 
+              blogs={blogs} 
+              onEdit={handleEdit} 
+              setMessage={setMessage} 
+              refreshBlogs={refreshBlogs} 
+            />
+          </>
+        );
       default:
         return null;
     }
