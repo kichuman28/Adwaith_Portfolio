@@ -11,10 +11,25 @@ const BlogList = ({ blogs, onEdit, setMessage, refreshBlogs }) => {
   const [isReordering, setIsReordering] = useState(false);
   const navigate = useNavigate();
 
-  // Sort blogs by displayOrder
-  const sortedBlogs = [...blogs].sort((a, b) => 
-    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
-  );
+  // Sort blogs by displayOrder, with new items (without displayOrder) at the end
+  const sortedBlogs = [...blogs].sort((a, b) => {
+    // If both have displayOrder, compare them
+    if (a.displayOrder !== undefined && b.displayOrder !== undefined) {
+      return a.displayOrder - b.displayOrder;
+    }
+    // If only a has displayOrder, a comes first
+    if (a.displayOrder !== undefined) {
+      return -1;
+    }
+    // If only b has displayOrder, b comes first
+    if (b.displayOrder !== undefined) {
+      return 1;
+    }
+    // If neither has displayOrder, sort by creation date (newest first)
+    const aDate = a.createdAt?.toDate() || new Date(0);
+    const bDate = b.createdAt?.toDate() || new Date(0);
+    return bDate - aDate;
+  });
 
   const handleDelete = async () => {
     if (!blogToDelete) return;
