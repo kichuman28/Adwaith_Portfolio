@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
@@ -140,15 +140,10 @@ const AddProject = ({ setMessage, editingItem, onCancel }) => {
       }
 
       // Upload new additional images
-      if (formData.additionalImages.length > 0) {
-        const newImages = await Promise.all(
-          formData.additionalImages.map(uploadToCloudinary)
-        );
-        // Only add newly uploaded images
-        additionalImageUrls = [
-          ...additionalImageUrls.filter(url => typeof url === 'string' && url.startsWith('http')),
-          ...newImages
-        ];
+      for (let i = 0; i < formData.additionalImages.length; i++) {
+        const file = formData.additionalImages[i];
+        const url = await uploadToCloudinary(file);
+        additionalImageUrls.push(url);
       }
 
       const projectData = {
@@ -165,11 +160,34 @@ const AddProject = ({ setMessage, editingItem, onCancel }) => {
       };
 
       if (editingItem) {
+        // Keep existing displayOrder when updating
         await updateDoc(doc(db, 'projects', editingItem.id), projectData);
         setMessage({ type: 'success', text: 'Project updated successfully!' });
       } else {
+        // For new projects, get the highest displayOrder and add 1
+        let displayOrder = 0;
+        try {
+          const projectsRef = collection(db, 'projects');
+          const projectsSnapshot = await getDocs(projectsRef);
+          const projects = projectsSnapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id
+          }));
+          
+          // Find the highest display order
+          if (projects.length > 0) {
+            const maxOrder = Math.max(...projects
+              .map(p => p.displayOrder || 0)
+              .filter(order => !isNaN(order)));
+            displayOrder = maxOrder + 1;
+          }
+        } catch (err) {
+          console.error("Error getting max display order:", err);
+        }
+        
         await addDoc(collection(db, 'projects'), {
           ...projectData,
+          displayOrder,
           createdAt: serverTimestamp()
         });
         setMessage({ type: 'success', text: 'Project added successfully!' });
