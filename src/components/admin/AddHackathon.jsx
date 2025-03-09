@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
@@ -242,8 +242,23 @@ const AddHackathon = ({ setMessage, editingItem, onCancel }) => {
         await updateDoc(doc(db, 'hackathons', editingItem.id), hackathonData);
         setMessage({ type: 'success', text: 'Hackathon updated successfully!' });
       } else {
+        // Get the highest current display order
+        let displayOrder = 0;
+        try {
+          const hackathonsSnapshot = await getDocs(collection(db, 'hackathons'));
+          if (!hackathonsSnapshot.empty) {
+            const maxOrder = Math.max(...hackathonsSnapshot.docs
+              .map(doc => doc.data().displayOrder || 0)
+              .filter(order => !isNaN(order)));
+            displayOrder = maxOrder + 1;
+          }
+        } catch (err) {
+          console.error("Error getting max display order:", err);
+        }
+        
         await addDoc(collection(db, 'hackathons'), {
           ...hackathonData,
+          displayOrder,
           createdAt: serverTimestamp()
         });
         setMessage({ type: 'success', text: 'Hackathon added successfully!' });
