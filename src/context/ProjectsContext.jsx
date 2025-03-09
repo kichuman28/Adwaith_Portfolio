@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, getDocs } from 'firebase/firestore';
+import { collection, query, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 const ProjectsContext = createContext();
@@ -11,34 +11,45 @@ export const ProjectsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProjects = async () => {
-    setLoading(true);
+  useEffect(() => {
     try {
-      const projectsCollection = collection(db, 'projects');
-      const projectsSnapshot = await getDocs(projectsCollection);
-      const projectsList = projectsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setProjects(projectsList);
-      setError(null);
+      // Create a query against the projects collection
+      const projectsQuery = query(
+        collection(db, 'projects')
+      );
+
+      // Set up a real-time listener
+      const unsubscribe = onSnapshot(
+        projectsQuery,
+        (snapshot) => {
+          const projectsData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setProjects(projectsData);
+          setLoading(false);
+          setError(null);
+        },
+        (err) => {
+          console.error('Error fetching projects:', err);
+          setError('Failed to load projects');
+          setLoading(false);
+        }
+      );
+
+      // Clean up listener on unmount
+      return () => unsubscribe();
     } catch (err) {
-      console.error('Error fetching projects:', err);
+      console.error('Error setting up projects listener:', err);
       setError('Failed to load projects');
-    } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchProjects();
   }, []);
 
   const value = {
     projects,
     loading,
-    error,
-    refreshProjects: fetchProjects
+    error
   };
 
   return (
