@@ -28,16 +28,28 @@ const DisplayOrderInitializer = ({ refreshProjects, refreshHackathons, refreshBl
       
       // Update each item with a display order
       let successCount = 0;
-      for (let i = 0; i < sortedItems.length; i++) {
-        await updateDoc(doc(db, contentType, sortedItems[i].id), {
-          displayOrder: i
+      
+      // First, filter out items that already have a displayOrder
+      const itemsToUpdate = sortedItems.filter(item => item.displayOrder === undefined);
+      
+      // Find the highest current display order
+      const maxDisplayOrder = sortedItems
+        .filter(item => item.displayOrder !== undefined)
+        .reduce((max, item) => Math.max(max, item.displayOrder || 0), -1);
+      
+      // Set display order for items without one, starting from maxDisplayOrder + 1
+      for (let i = 0; i < itemsToUpdate.length; i++) {
+        await updateDoc(doc(db, contentType, itemsToUpdate[i].id), {
+          displayOrder: maxDisplayOrder + 1 + i
         });
         successCount++;
       }
       
       setResult({ 
         status: 'success', 
-        message: `Successfully initialized display order for ${successCount} ${contentType}!` 
+        message: successCount > 0 
+          ? `Successfully initialized display order for ${successCount} new ${contentType}!` 
+          : `All ${contentType} already have a display order. No changes made.`
       });
       
       // Refresh content to show the new order
