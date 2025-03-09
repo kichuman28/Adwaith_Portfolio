@@ -1,14 +1,20 @@
 import { useState } from 'react';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
-import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import DeleteConfirmation from './DeleteConfirmation';
 
-const ProjectList = ({ projects, onEdit, setMessage }) => {
+const ProjectList = ({ projects, onEdit, setMessage, refreshProjects }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [isReordering, setIsReordering] = useState(false);
   const navigate = useNavigate();
+
+  // Sort projects by displayOrder
+  const sortedProjects = [...projects].sort((a, b) => 
+    (a.displayOrder || Number.MAX_SAFE_INTEGER) - (b.displayOrder || Number.MAX_SAFE_INTEGER)
+  );
 
   const handleDelete = async () => {
     if (!projectToDelete) return;
@@ -16,6 +22,7 @@ const ProjectList = ({ projects, onEdit, setMessage }) => {
     try {
       await deleteDoc(doc(db, 'projects', projectToDelete.id));
       setMessage({ type: 'success', text: 'Project deleted successfully!' });
+      if (refreshProjects) refreshProjects();
     } catch (error) {
       console.error('Error deleting project:', error);
       setMessage({ type: 'error', text: 'Error deleting project. Please try again.' });
@@ -30,9 +37,45 @@ const ProjectList = ({ projects, onEdit, setMessage }) => {
     setShowDeleteConfirm(true);
   };
 
+  const moveProject = async (project, direction) => {
+    setIsReordering(true);
+    try {
+      const currentIndex = sortedProjects.findIndex(p => p.id === project.id);
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      
+      // Check if move is possible
+      if (targetIndex < 0 || targetIndex >= sortedProjects.length) {
+        setIsReordering(false);
+        return;
+      }
+      
+      const targetProject = sortedProjects[targetIndex];
+      
+      // Swap display orders
+      const currentOrder = project.displayOrder || Number.MAX_SAFE_INTEGER;
+      const targetOrder = targetProject.displayOrder || Number.MAX_SAFE_INTEGER;
+      
+      // Update both projects
+      await updateDoc(doc(db, 'projects', project.id), {
+        displayOrder: targetOrder
+      });
+      
+      await updateDoc(doc(db, 'projects', targetProject.id), {
+        displayOrder: currentOrder
+      });
+      
+      setMessage({ type: 'success', text: 'Project order updated!' });
+      if (refreshProjects) refreshProjects();
+    } catch (error) {
+      console.error('Error reordering projects:', error);
+      setMessage({ type: 'error', text: 'Error updating project order. Please try again.' });
+    }
+    setIsReordering(false);
+  };
+
   return (
     <div className="space-y-4">
-      {projects.map((project) => (
+      {sortedProjects.map((project, index) => (
         <div
           key={project.id}
           className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6"
@@ -49,6 +92,32 @@ const ProjectList = ({ projects, onEdit, setMessage }) => {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              {/* Order Controls */}
+              <div className="flex items-center gap-2 mr-2">
+                <button
+                  onClick={() => moveProject(project, 'up')}
+                  disabled={index === 0 || isReordering}
+                  className={`p-2 rounded-lg transition-colors duration-200 
+                    ${index === 0 || isReordering 
+                      ? 'bg-white/5 text-white/30 cursor-not-allowed' 
+                      : 'bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30'}`}
+                  title="Move Up"
+                >
+                  <FaArrowUp className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => moveProject(project, 'down')}
+                  disabled={index === sortedProjects.length - 1 || isReordering}
+                  className={`p-2 rounded-lg transition-colors duration-200 
+                    ${index === sortedProjects.length - 1 || isReordering 
+                      ? 'bg-white/5 text-white/30 cursor-not-allowed' 
+                      : 'bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30'}`}
+                  title="Move Down"
+                >
+                  <FaArrowDown className="w-4 h-4" />
+                </button>
+              </div>
+              
               <button
                 onClick={() => navigate(`/projects/${project.id}`)}
                 className="p-2 rounded-lg bg-emerald-400/20 text-emerald-400 hover:bg-emerald-400/30 transition-colors duration-200"
