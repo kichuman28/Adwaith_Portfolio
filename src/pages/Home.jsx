@@ -451,6 +451,16 @@ const Home = () => {
                     Caddayn
                     <span className="absolute -bottom-px left-0 w-full h-px bg-emerald-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
                   </a>
+                  {' '}and{' '}
+                  <a 
+                    href="https://www.thinnan.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                        className="text-emerald-400 hover:text-emerald-300 relative group inline-flex items-center font-medium"
+                  >
+                    thinnan
+                    <span className="absolute -bottom-px left-0 w-full h-px bg-emerald-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                  </a>
                       , I just love working with Flutter. Did you know you could make games with it?
                     </p>
                   </div>
